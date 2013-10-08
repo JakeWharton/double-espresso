@@ -3,7 +3,6 @@ package com.google.android.apps.common.testing.intento;
 import android.app.Instrumentation.ActivityResult;
 import android.content.Intent;
 
-import org.hamcrest.Matcher;
 
 import java.util.List;
 
@@ -25,12 +24,6 @@ public interface IntentSpy {
    * Records the given intent.
    */
   public void record(Intent intent);
-
-  /**
-   * Sets the result that will be returned to the intent sender (if the sender expects the result),
-   * next time an intent matched by the given matcher is launched.
-   */
-  public void setActivityResultForIntent(Matcher<Intent> matcher, ActivityResult result);
 
   /**
    * Returns the first matching stubbed result for the given activity if stubbed result was set by

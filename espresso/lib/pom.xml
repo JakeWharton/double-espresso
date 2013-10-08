@@ -58,8 +58,35 @@
     </dependency>
     <dependency>
       <groupId>com.google.android.apps.common.testing</groupId>
-      <artifactId>testrunner</artifactId>
+      <artifactId>testrunner-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+       <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.1</version>
+          <configuration>
+            <shadedArtifactAttached>true</shadedArtifactAttached>
+            <shadedClassifierName>bundled</shadedClassifierName>
+            <transformers>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                <addHeader>false</addHeader>
+              </transformer>
+            </transformers>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+            </execution>
+         </executions>
+       </plugin>
+    </plugins>
+  </build>
 </project>

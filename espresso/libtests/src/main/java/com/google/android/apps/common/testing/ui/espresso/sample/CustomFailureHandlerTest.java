@@ -28,7 +28,7 @@ public class CustomFailureHandlerTest extends ActivityInstrumentationTestCase2<M
 
   @SuppressWarnings("deprecation")
   public CustomFailureHandlerTest() {
-    // Supporting froyo.
+    // This constructor was deprecated - but we want to support lower API levels.
     super("com.google.android.apps.common.testing.ui.testapp", MainActivity.class);
   }
 

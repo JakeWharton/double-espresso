@@ -8,6 +8,7 @@
     <string name="button_pick">Pick</string>
     <string name="button_market">Goto Market</string>
     <string name="button_gesture">Go To Gesture Activity</string>
+    <string name="button_simple">Click Me!</string>
     <string name="display_data" />
     <string name="display_title">Data from sender</string>
     <string name="dialog_title">An emergency alert</string>
@@ -40,6 +41,7 @@
     <string name="text_empty"></string>
     <string name="text_show">Show</string>
     <string name="text_hide">Hide</string>
+    <string name="text_simple">Message</string>
     <string name="popup_item_1_text">Popup Item 1</string>
     <string name="popup_item_2_text">Popup Item 2</string>
     <string name="popup_item_3_text">Popup Item 3</string>
@@ -54,4 +56,13 @@
     <string name="column_label">clicked on column:</string>
     <string name="hello_world">hello world!</string>
     <string name="request_hello_world">Request hello world</string>
+    <string-array name="spinner_array">
+        <item>Espresso</item>
+        <item>Doppio</item>
+        <item>Macchiato</item>
+        <item>Cappuccino</item>
+        <item>Americano</item>
+        <item>Mocha</item>
+        <item>Late</item>
+    </string-array>
 </resources>

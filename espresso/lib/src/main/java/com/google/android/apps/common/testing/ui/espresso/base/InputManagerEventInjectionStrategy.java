@@ -108,14 +108,14 @@ final class InputManagerEventInjectionStrategy implements EventInjectionStrategy
     return false;
   }
 
-
   @Override
   public boolean injectMotionEvent(MotionEvent motionEvent) throws InjectEventSecurityException {
     try {
       // Need to set the event source to touch screen, otherwise the input can be ignored even
       // though injecting it would be successful.
       // TODO(user): proper handling of events from a trackball (SOURCE_TRACKBALL) and joystick.
-      if ((motionEvent.getSource() & InputDevice.SOURCE_CLASS_POINTER) == 0) {
+      if ((motionEvent.getSource() & InputDevice.SOURCE_CLASS_POINTER) == 0
+          && !isFromTouchpadInGlassDevice(motionEvent)) {
         // Need to do runtime invocation of setSource because it was not added until 2.3_r1.
         setSourceMotionMethod.invoke(motionEvent, InputDevice.SOURCE_TOUCHSCREEN);
       }
@@ -135,5 +135,12 @@ final class InputManagerEventInjectionStrategy implements EventInjectionStrategy
       throw new InjectEventSecurityException(e);
     }
     return false;
+  }
+
+  // We'd like to inject non-pointer events sourced from touchpad in Glass.
+  private static boolean isFromTouchpadInGlassDevice(MotionEvent motionEvent) {
+    return (Build.DEVICE.contains("glass")
+        || Build.DEVICE.contains("Glass") || Build.DEVICE.contains("wingman"))
+        && ((motionEvent.getSource() & InputDevice.SOURCE_TOUCHPAD) != 0);
   }
 }

@@ -25,7 +25,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 public class MenuTest extends ActivityInstrumentationTestCase2<MenuActivity> {
   @SuppressWarnings("deprecation")
   public MenuTest() {
-    // Supporting froyo.
+    // This constructor was deprecated - but we want to support lower API levels.
     super("com.google.android.apps.common.testing.ui.testapp", MenuActivity.class);
   }
 

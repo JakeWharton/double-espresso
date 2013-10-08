@@ -11,7 +11,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="ActionBarTestActivity" android:label="actionbar test activity" android:theme="@style/Theme.AppCompat.Light"/>
+        <activity android:name="ActionBarTestActivity" android:label="actionbar test activity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+        <activity android:name="SimpleActivity" android:label="simple activity"/>
         <activity android:name="SendActivity" android:label="send activity"/>
         <activity android:name="DisplayActivity" android:label="display activity"/>
         <activity android:name="GestureActivity" android:label="gesture activity" android:exported="true"/>
