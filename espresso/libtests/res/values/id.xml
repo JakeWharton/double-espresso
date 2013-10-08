@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- IDs used for testing purposes -->
+  <item type="id" name="testId1" />
+  <item type="id" name="testId2" />
+  <item type="id" name="testId3" />
+</resources>

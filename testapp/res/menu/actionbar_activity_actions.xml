@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto" >
+    <item android:id="@+id/action_save"
+          android:icon="@drawable/ic_action_save"
+          android:title="Save"
+          yourapp:showAsAction="never"/>
+    <item android:id="@+id/action_search"
+          android:icon="@drawable/ic_action_search"
+          android:title="Search"
+          yourapp:showAsAction="never"/>
+    <item android:id="@+id/action_world"
+          android:icon="@drawable/ic_action_world"
+          android:title="World"
+          yourapp:showAsAction="never"/>
+    <item android:id="@+id/action_key"
+          android:icon="@drawable/ic_action_key"
+          android:title="Key"
+          yourapp:showAsAction="never"/>
+    <item android:id="@+id/action_calendar"
+          android:icon="@drawable/ic_action_calendar"
+          android:title="Calendar"
+          yourapp:showAsAction="never"/>
+    <item android:id="@+id/action_lock"
+          android:icon="@drawable/ic_action_lock"
+          android:title="Lock"
+          yourapp:showAsAction="never"  />
+</menu>
+
