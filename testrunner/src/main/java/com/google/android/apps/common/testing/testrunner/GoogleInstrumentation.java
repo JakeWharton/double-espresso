@@ -82,6 +82,7 @@ extends ExposedInstrumentationApi {
       return true;
     }
   };
+  private volatile boolean finished = false;
   private IntentSpy intentSpy = null;
 
   /**
@@ -176,6 +177,13 @@ extends ExposedInstrumentationApi {
    */
   @Override
   public void finish(int resultCode, Bundle results) {
+    if (finished) {
+      Log.w(LOG_TAG, "finish called 2x!");
+      return;
+    } else {
+      finished = true;
+    }
+
     handlerForMainLooper.post(new ActivityFinisher());
 
     long startTime = System.currentTimeMillis();
