@@ -6,7 +6,6 @@ import static com.google.android.apps.common.testing.ui.espresso.Espresso.openAc
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.openContextualActionModeOverflowMenu;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
-import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -56,8 +55,7 @@ public class EspressoTest extends ActivityInstrumentationTestCase2<MainActivity>
     openContextualActionModeOverflowMenu();
     onView(withText("Key"))
         .perform(click());
-    onView(withId(R.id.textActionBarResult))
-        .check(matches(isDisplayed()))
+    onView(withId(R.id.text_action_bar_result))
         .check(matches(withText("Key")));
   }
 
@@ -65,13 +63,12 @@ public class EspressoTest extends ActivityInstrumentationTestCase2<MainActivity>
   public void testOpenOverflowFromActionBar() {
     onData(allOf(instanceOf(Map.class), hasValue(ActionBarTestActivity.class.getSimpleName())))
         .perform(click());
-    onView(withText("Hide"))
+    onView(withId(R.id.hide_contextual_action_bar))
         .perform(click());
     openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
     onView(withText("World"))
         .perform(click());
-    onView(withId(R.id.textActionBarResult))
-        .check(matches(isDisplayed()))
+    onView(withId(R.id.text_action_bar_result))
         .check(matches(withText("World")));
   }
 

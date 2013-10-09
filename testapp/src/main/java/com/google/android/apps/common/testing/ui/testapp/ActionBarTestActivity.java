@@ -25,25 +25,27 @@ public class ActionBarTestActivity extends ActionBarActivity {
     inflater = getMenuInflater();
     mode = startSupportActionMode(new TestActionMode());
 
-    ((Button) findViewById(R.id.show)).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        mode = startSupportActionMode(new TestActionMode());
-      }
-    });
-    ((Button) findViewById(R.id.hide)).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (mode != null) {
-          mode.finish();
-        }
-      }
-    });
+    ((Button) findViewById(R.id.show_contextual_action_bar)).setOnClickListener(
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            mode = startSupportActionMode(new TestActionMode());
+          }
+        });
+    ((Button) findViewById(R.id.hide_contextual_action_bar)).setOnClickListener(
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            if (mode != null) {
+              mode.finish();
+            }
+          }
+        });
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    inflater.inflate(R.menu.actionbar_activity_actions, menu);
+    inflater.inflate(R.menu.actionbar_context_actions, menu);
     return super.onCreateOptionsMenu(menu);
   }
 
@@ -54,7 +56,7 @@ public class ActionBarTestActivity extends ActionBarActivity {
   }
 
   private void setResult(CharSequence result) {
-    TextView text = (TextView) findViewById(R.id.textActionBarResult);
+    TextView text = (TextView) findViewById(R.id.text_action_bar_result);
     text.setText(result);
   }
 
