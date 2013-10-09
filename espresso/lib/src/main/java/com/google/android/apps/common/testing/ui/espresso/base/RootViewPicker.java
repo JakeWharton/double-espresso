@@ -1,21 +1,21 @@
 package com.google.android.apps.common.testing.ui.espresso.base;
 
+import static com.google.android.apps.common.testing.ui.espresso.matcher.RootMatchers.isFocusable;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Iterables.getOnlyElement;
 
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitor;
 import com.google.android.apps.common.testing.testrunner.Stage;
+import com.google.android.apps.common.testing.ui.espresso.NoMatchingRootException;
 import com.google.android.apps.common.testing.ui.espresso.Root;
 import com.google.android.apps.common.testing.ui.espresso.UiController;
-import com.google.android.apps.common.testing.ui.espresso.util.HumanReadables;
 import com.google.common.collect.Lists;
 
 import android.app.Activity;
-import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
+
+import org.hamcrest.Matcher;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -30,32 +30,31 @@ import javax.inject.Singleton;
  * Provides the root View of the top-most Window, with which the user can interact. View is
  * guaranteed to be in a stable state - i.e. not pending any updates from the application.
  *
- * TODO(user): delegate the Window picking logic (which is built in right now) to a
- * Matcher<Window>.
  * This provider can only be accessed from the main thread.
  */
 @Singleton
 public final class RootViewPicker implements Provider<View> {
-
   private static final String TAG = RootViewPicker.class.getSimpleName();
 
   private final Provider<List<Root>> rootsOracle;
   private final UiController uiController;
   private final ActivityLifecycleMonitor activityLifecycleMonitor;
+  private final Matcher<Root> rootMatcher;
 
   @Inject
   RootViewPicker(Provider<List<Root>> rootsOracle, UiController uiController,
-      ActivityLifecycleMonitor activityLifecycleMonitor) {
+      ActivityLifecycleMonitor activityLifecycleMonitor, Matcher<Root> rootMatcher) {
     this.rootsOracle = rootsOracle;
     this.uiController = uiController;
     this.activityLifecycleMonitor = activityLifecycleMonitor;
+    this.rootMatcher = rootMatcher;
   }
 
   @Override
   public View get() {
     checkState(Looper.getMainLooper().equals(Looper.myLooper()), "must be called on main thread.");
 
-    View rootView = findRootView();
+    Root root = findRoot(rootMatcher);
 
     // we only want to propagate a root view that the user can interact with and is not
     // about to relay itself out. An app should be in this state the majority of the time,
@@ -63,31 +62,84 @@ public final class RootViewPicker implements Provider<View> {
     // we should come to it quickly enough.
     int loops = 0;
 
-    while (rootView.isLayoutRequested() || !rootView.hasWindowFocus()) {
+    while (!isReady(root)) {
       if (loops < 3) {
         uiController.loopMainThreadUntilIdle();
       } else if (loops < 1001) {
 
-        // loopUntil idle effectively is polling and pegs the cpu... if we dont have an update to
-        // process immedately, we might have something coming very very soon.
-
+        // loopUntil idle effectively is polling and pegs the CPU... if we don't have an update to
+        // process immediately, we might have something coming very very soon.
         uiController.loopMainThreadForAtLeast(10);
       } else {
-        // we've waited for the root view to be fully layed out and have window focus
+        // we've waited for the root view to be fully laid out and have window focus
         // for over 10 seconds. something is wrong.
-        throw new RuntimeException("Waited for the root of the view hierarchy to have window " +
-            "focus and not be requesting layout for over 10 seconds. Something is seriously " +
-            "wrong. View: " + HumanReadables.describe(rootView));
+        throw new RuntimeException("Waited for the root of the view hierarchy to have window focus"
+            + " and not be requesting layout for over 10 seconds. If you specified a non default"
+            + " root matcher, it may be picking a root that never takes focus. Otherwise, something"
+            + " is seriously wrong. Root: " + root);
       }
 
-      rootView = findRootView();
+      root = findRoot(rootMatcher);
       loops++;
     }
 
-    return rootView;
+    return root.getDecorView();
   }
 
-  private View findRootView() {
+  private boolean isReady(Root root) {
+    // Root is ready (i.e. UI is no longer in flux) if layout of the root view is not being
+    // requested and the root view has window focus (if it is focusable).
+    View rootView = root.getDecorView();
+    if (!rootView.isLayoutRequested()) {
+      return rootView.hasWindowFocus() || !isFocusable().matches(root);
+    }
+    return false;
+  }
+
+  private Root findRoot(Matcher<Root> rootMatcher) {
+    waitForAtLeastOneActivityToBeResumed();
+
+    List<Root> roots = rootsOracle.get();
+
+    // TODO(user): move these checks into the RootsOracle.
+    if (roots.isEmpty()) {
+      // Reflection broke
+      throw new RuntimeException("No root window were discovered.");
+    }
+
+    if (roots.size() > 1) {
+      // Multiple roots only occur:
+      // when multiple activities are in some state of their lifecycle in the application
+      // - we don't care about this, since we only want to interact with the RESUMED
+      // activity, all other activities windows are not visible to the user so, out of
+      // scope.
+      // when a PopupWindow or PopupMenu is used
+      // - this is a case where we definitely want to consider the top most window, since
+      // it probably has the most useful info in it.
+      // when an android.app.dialog is shown
+      // - again, this is getting all the users attention, so it gets the test attention
+      // too.
+      if (Log.isLoggable(TAG, Log.VERBOSE)) {
+        Log.v(TAG, String.format("Multiple windows detected: %s", roots));
+      }
+    }
+
+    List<Root> selectedRoots = Lists.newArrayList();
+    for (Root root : roots) {
+      if (rootMatcher.matches(root)) {
+        selectedRoots.add(root);
+      }
+    }
+
+    if (selectedRoots.isEmpty()) {
+      throw NoMatchingRootException.create(rootMatcher, roots);
+    }
+
+    return reduceRoots(selectedRoots);
+  }
+
+  @SuppressWarnings("unused")
+  private void waitForAtLeastOneActivityToBeResumed() {
     Collection<Activity> resumedActivities =
         activityLifecycleMonitor.getActivitiesInStage(Stage.RESUMED);
     if (resumedActivities.isEmpty()) {
@@ -100,99 +152,38 @@ public final class RootViewPicker implements Provider<View> {
         activities.addAll(activityLifecycleMonitor.getActivitiesInStage(Stage.RESUMED));
       }
       if (activities.isEmpty()) {
-        throw new RuntimeException("No activities found. Did you forget to launch the activity " +
-            "by calling getActivity() or startActivitySync or similar?");
+        throw new RuntimeException("No activities found. Did you forget to launch the activity "
+            + "by calling getActivity() or startActivitySync or similar?");
       }
       // well at least there are some activities in the pipeline - lets see if they resume.
 
-      long [] waitTimes = {10, 50, 100, 500, TimeUnit.SECONDS.toMillis(2),
-        TimeUnit.SECONDS.toMillis(30)};
+      long[] waitTimes =
+          {10, 50, 100, 500, TimeUnit.SECONDS.toMillis(2), TimeUnit.SECONDS.toMillis(30)};
 
       for (int waitIdx = 0; waitIdx < waitTimes.length; waitIdx++) {
-        Log.w(TAG, "No activity currently resumed - waiting: " + waitTimes[waitIdx] +
-            "ms for one to appear.");
+        Log.w(TAG, "No activity currently resumed - waiting: " + waitTimes[waitIdx]
+            + "ms for one to appear.");
         uiController.loopMainThreadForAtLeast(waitTimes[waitIdx]);
         resumedActivities = activityLifecycleMonitor.getActivitiesInStage(Stage.RESUMED);
         if (!resumedActivities.isEmpty()) {
           break;
         }
       }
-      throw new RuntimeException("No activities in stage RESUMED. Did you forget to launch the " +
-          "activity. (test.getActivity() or similar)?");
+      throw new RuntimeException("No activities in stage RESUMED. Did you forget to launch the "
+          + "activity. (test.getActivity() or similar)?");
     }
-    Activity topActivity = getOnlyElement(resumedActivities);
+  }
 
-    List<Root> roots = rootsOracle.get();
-    if (roots.isEmpty() || roots.size() == 1) {
-      // either reflection broke or things just are not that interesting.
-      // Multiple roots only occur:
-      //   when multiple activities are in some state of their lifecycle in the application
-      //     - we don't care about this, since we only want to interact with the RESUMED
-      //       activity, all other activities windows are not visible to the user so, out of
-      //       scope.
-      //   when a PopupWindow or PopupMenu is used
-      //     - this is a case where we definitely want to consider the top most window, since
-      //       it probably has the most useful info in it.
-      //   when an android.app.dialog is shown
-      //     - again, this is getting all the users attention, so it gets the test attention
-      //       too.
-      //
-      // So generally - falling back to resumed activity's root view is often the right thing
-      // to do.
-      return topActivity.getWindow().getDecorView();
-    }
-
-    Log.i(TAG, "Roots: " + roots);
-
-    IBinder resumedActivityToken = topActivity.getWindow().getDecorView()
-        .getApplicationWindowToken();
-
-    List<Root> activitySubpanels = Lists.newArrayList();
-    for (Root root : roots) {
-      if (root.getWindowLayoutParams().isPresent()) {
-        int flags = root.getWindowLayoutParams().get().flags;
-        boolean notFocusable = (flags & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) == 1;
-        boolean notTouchable = (flags & WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE) == 1;
-        if (notFocusable || notTouchable) {
-          // ignore windows the user cannot interact with - we can't interact with them either.
-          // sure we could perform verifications on them - but we could never do anything else.
-          // need to have a concrete use-case of how windows like these should be exposed to
-          // tests.
-
-          continue;
-        }
-
-        int type = root.getWindowLayoutParams().get().type;
-        if (type != WindowManager.LayoutParams.TYPE_BASE_APPLICATION &&
-            type < WindowManager.LayoutParams.LAST_APPLICATION_WINDOW) {
-          IBinder windowToken = root.getDecorView().getWindowToken();
-          IBinder appToken = root.getDecorView().getApplicationWindowToken();
-          if (windowToken == appToken) {
-            // windowtoken == appToken means this window isnt contained by any other windows.
-            // if it was a window for an activity, it would have TYPE_BASE_APPLICATION.
-            // therefore it must be a dialog box - let it be our root if its taking input.
-            if (root.getDecorView().hasWindowFocus()) {
-              return root.getDecorView();
-            }
-          }
-        } else if (root.getDecorView().getApplicationWindowToken() == resumedActivityToken) {
-          // this window is contained in our resumed activity's window.
-          activitySubpanels.add(root);
-        } // else - not in the resumed activity, not a dialog with focus - ignore.
-      }
-    }
-
-    if (activitySubpanels.isEmpty()) {
-      return topActivity.getWindow().getDecorView();
-    } else {
-      Root topSubpanel = activitySubpanels.get(0);
-      for (Root subpanel : activitySubpanels) {
-        if (subpanel.getWindowLayoutParams().get().type >
-            topSubpanel.getWindowLayoutParams().get().type) {
+  private Root reduceRoots(List<Root> subpanels) {
+    Root topSubpanel = subpanels.get(0);
+    if (subpanels.size() >= 1) {
+      for (Root subpanel : subpanels) {
+        if (subpanel.getWindowLayoutParams().get().type
+            > topSubpanel.getWindowLayoutParams().get().type) {
           topSubpanel = subpanel;
         }
       }
-      return topSubpanel.getDecorView();
     }
+    return topSubpanel;
   }
 }

@@ -113,15 +113,16 @@ public final class HumanReadables {
     }
 
     helper.add("width", v.getWidth())
-        .add("height", v.getHeight())
-        .add("has-focus", v.hasFocus())
-        .add("has-focusable", v.hasFocusable())
-        .add("window-focus", v.hasWindowFocus())
-        .add("is-focused", v.isFocused())
-        .add("is-focusable", v.isFocusable())
-        .add("enabled", v.isEnabled())
-        .add("selected", v.isSelected())
-        .add("is-layout-requested", v.isLayoutRequested());
+      .add("height", v.getHeight())
+      .add("has-focus", v.hasFocus())
+      .add("has-focusable", v.hasFocusable())
+      .add("has-window-focus", v.hasWindowFocus())
+      .add("is-clickable", v.isClickable())
+      .add("is-enabled", v.isEnabled())
+      .add("is-focused", v.isFocused())
+      .add("is-focusable", v.isFocusable())
+      .add("is-layout-requested", v.isLayoutRequested())
+      .add("is-selected", v.isSelected());
 
     if (null != v.getRootView()) {
       // pretty much only true in unit-tests.

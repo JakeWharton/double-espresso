@@ -7,6 +7,7 @@ import com.google.android.apps.common.testing.testrunner.inject.TargetContext;
 import com.google.android.apps.common.testing.ui.espresso.FailureHandler;
 import com.google.android.apps.common.testing.ui.espresso.Root;
 import com.google.android.apps.common.testing.ui.espresso.UiController;
+import com.google.android.apps.common.testing.ui.espresso.matcher.RootMatchers;
 import com.google.common.base.Optional;
 
 import android.content.Context;
@@ -17,6 +18,8 @@ import android.view.View;
 
 import dagger.Module;
 import dagger.Provides;
+
+import org.hamcrest.Matcher;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -153,6 +156,11 @@ public class BaseLayerModule {
   @Default
   FailureHandler provideFailureHander(DefaultFailureHandler impl) {
     return impl;
+  }
+
+  @Provides
+  Matcher<Root> provideRootMatcher() {
+    return RootMatchers.DEFAULT;
   }
 
 }
