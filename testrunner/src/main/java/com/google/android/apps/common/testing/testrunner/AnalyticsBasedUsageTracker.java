@@ -17,9 +17,10 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
@@ -35,7 +36,6 @@ final class AnalyticsBasedUsageTracker implements UsageTracker {
   private static final String TRACKER_ID_PARAM = "&tid=";
   private static final String CLIENT_ID_PARAM = "&cid=";
   private static final String SCREEN_RESOLUTION_PARAM = "&sr=";
-  private static final String HOST_TYPE_PARAM = "&cd1=";
   private static final String API_LEVEL_PARAM = "&cd2=";
   private static final String MODEL_NAME_PARAM = "&cd3=";
 
@@ -46,8 +46,7 @@ final class AnalyticsBasedUsageTracker implements UsageTracker {
   private final String apiLevel;
   private final String model;
   private final String userId;
-
-  private List<String> usages = new ArrayList<String>();
+  private final ExecutorService executor;
 
   private AnalyticsBasedUsageTracker(Builder builder) {
     this.trackingId = checkNotNull(builder.trackingId);
@@ -57,6 +56,7 @@ final class AnalyticsBasedUsageTracker implements UsageTracker {
     this.model = checkNotNull(builder.model);
     this.screenResolution = checkNotNull(builder.screenResolution);
     this.userId = checkNotNull(builder.userId);
+    this.executor = checkNotNull(builder.executor);
   }
 
   public static class Builder {
@@ -73,6 +73,7 @@ final class AnalyticsBasedUsageTracker implements UsageTracker {
     private URL analyticsURI;
     private String screenResolution;
     private String userId;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public Builder(Context targetContext) {
       if (targetContext == null) {
@@ -167,71 +168,71 @@ final class AnalyticsBasedUsageTracker implements UsageTracker {
 
   @Override
   public void trackUsage(String usageType) {
-    synchronized (usages) {
-      usages.add(usageType);
-    }
+    executor.submit(new Hit(usageType));
+
   }
 
 
   @Override
   public void sendUsages() {
-    List<String> myUsages = null;
-    synchronized (usages) {
-      if (usages.isEmpty()) {
-        return;
-      }
-      myUsages = new ArrayList<String>(usages);
-      usages.clear();
-    }
-
-    String baseBody = null;
     try {
-      baseBody = new StringBuilder()
-          .append(APP_NAME_PARAM)
-          .append(encode(targetPackage, UTF_8))
-          .append(TRACKER_ID_PARAM)
-          .append(encode(trackingId))
-          .append("&v=1")
-          .append("&z=")
-          .append(SystemClock.uptimeMillis())
-          .append(CLIENT_ID_PARAM)
-          .append(encode(userId, UTF_8))
-          .append(SCREEN_RESOLUTION_PARAM)
-          .append(encode(screenResolution, UTF_8))
-          .append(API_LEVEL_PARAM)
-          .append(encode(apiLevel, UTF_8))
-          .append(MODEL_NAME_PARAM)
-          .append(encode(model, UTF_8))
-          .append("&t=appview")
-          .toString();
-    } catch (IOException ioe) {
-      Log.w(TAG, "Impossible error happened. analytics disabled.", ioe);
+      executor.awaitTermination(5, TimeUnit.SECONDS);
+    } catch (InterruptedException ie) {
+      Log.w(TAG, "Stopping due to interrupt");
+    }
+  }
+
+  private class Hit implements Runnable {
+    private final String usageType;
+    Hit(String usageType) {
+      this.usageType = usageType;
     }
 
-    for (String usage : myUsages) {
+    public void run() {
+      byte[] body = null;
+      try {
+        body = new StringBuilder()
+            .append(APP_NAME_PARAM)
+            .append(encode(targetPackage, UTF_8))
+            .append(TRACKER_ID_PARAM)
+            .append(encode(trackingId))
+            .append("&v=1")
+            .append("&z=")
+            .append(SystemClock.uptimeMillis())
+            .append(CLIENT_ID_PARAM)
+            .append(encode(userId, UTF_8))
+            .append(SCREEN_RESOLUTION_PARAM)
+            .append(encode(screenResolution, UTF_8))
+            .append(API_LEVEL_PARAM)
+            .append(encode(apiLevel, UTF_8))
+            .append(MODEL_NAME_PARAM)
+            .append(encode(model, UTF_8))
+            .append("&t=appview")
+            .append(CONTENT_DESCRIPT_PARAM)
+            .append(encode(usageType, UTF_8))
+            .toString()
+            .getBytes();
+      } catch (IOException ioe) {
+        Log.w(TAG, "Impossible error happened. analytics disabled.", ioe);
+      }
+
       HttpURLConnection analyticsConnection = null;
       try {
         analyticsConnection = (HttpURLConnection) analyticsURI.openConnection();
 
-        byte[] body = new StringBuilder()
-            .append(baseBody)
-            .append(CONTENT_DESCRIPT_PARAM)
-            .append(encode(usage, UTF_8))
-            .toString()
-            // j5 compatibility. this is utf8.
-            .getBytes();
-
+        analyticsConnection.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(1));
+        analyticsConnection.setReadTimeout(100);
         analyticsConnection.setDoOutput(true);
         analyticsConnection.setFixedLengthStreamingMode(body.length);
         analyticsConnection.getOutputStream().write(body);
         int status = analyticsConnection.getResponseCode();
         if (status / 100 != 2) {
-          Log.w(TAG, "Analytics post: " + usage + " failed. code: " +
+          Log.w(TAG, "Analytics post: " + usageType + " failed. code: " +
               analyticsConnection.getResponseCode() + " - " +
               analyticsConnection.getResponseMessage());
         }
       } catch (IOException ioe) {
-        Log.w(TAG, "Analytics post: " + usage + " failed. ", ioe);
+        Log.w(TAG, "Analytics post: " + usageType + " failed. ", ioe);
       } finally {
         if (null != analyticsConnection) {
           analyticsConnection.disconnect();
