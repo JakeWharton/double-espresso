@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.endsWith;
 
-import com.google.android.apps.common.testing.testrunner.UsageTracker;
 import com.google.android.apps.common.testing.testrunner.UsageTrackerRegistry;
 import com.google.android.apps.common.testing.ui.espresso.action.ViewActions;
 import com.google.android.apps.common.testing.ui.espresso.base.BaseLayerModule;
@@ -35,12 +34,10 @@ import org.hamcrest.Matcher;
 public final class Espresso {
 
   private static final ObjectGraph espressoGraph;
-  private static final UsageTracker usageTracker;
 
   static {
     espressoGraph = ObjectGraph.create(EspressoModule.class);
-    usageTracker = UsageTrackerRegistry.getInstance();
-    usageTracker.trackUsage("Espresso");
+    UsageTrackerRegistry.getInstance().trackUsage("Espresso");
   }
 
   static ObjectGraph espressoGraph() {
@@ -58,7 +55,6 @@ public final class Espresso {
    * @see #onData
    */
   public static ViewInteraction onView(Matcher<View> viewMatcher) {
-    usageTracker.trackUsage("Espresso.onView");
     return espressoGraph.plus(new ViewInteractionModule(viewMatcher))
         .get(ViewInteraction.class);
   }
@@ -70,7 +66,6 @@ public final class Espresso {
    * @param dataMatcher a matcher used to find the data object.
    */
   public static DataInteraction onData(Matcher<Object> dataMatcher) {
-    usageTracker.trackUsage("Espresso.onData");
     return new DataInteraction(dataMatcher);
   }
 
@@ -81,7 +76,6 @@ public final class Espresso {
    * a unique name.
    */
   public static void registerIdlingResources(IdlingResource... resources) {
-    usageTracker.trackUsage("Espresso.registerIdlingResources");
     checkNotNull(resources);
     IdlingResourceRegistry registry = espressoGraph.get(IdlingResourceRegistry.class);
     for (IdlingResource resource : resources) {
@@ -93,7 +87,6 @@ public final class Espresso {
    * Changes the default {@link FailureHandler} to the given one.
    */
   public static void setFailureHandler(FailureHandler failureHandler) {
-    usageTracker.trackUsage("Espresso.setFailureHandler");
     espressoGraph.get(BaseLayerModule.FailureHandlerHolder.class)
         .update(checkNotNull(failureHandler));
   }
@@ -113,7 +106,6 @@ public final class Espresso {
    * Closes soft keyboard if open.
    */
   public static void closeSoftKeyboard() {
-    usageTracker.trackUsage("Espresso.closeSoftKeyboard");
     Espresso.onView(isRoot()).perform(ViewActions.closeSoftKeyboard());
   }
 
@@ -128,7 +120,6 @@ public final class Espresso {
    */
   @SuppressWarnings("unchecked")
   public static void openContextualActionModeOverflowMenu() {
-    usageTracker.trackUsage("Espresso.openContextualActionModeOverflowMenu");
     onView(isRoot())
         .perform(new TransitionBridgingViewAction());
 
@@ -143,7 +134,6 @@ public final class Espresso {
    *         button would result in application closing.
    */
   public static void pressBack() {
-    usageTracker.trackUsage("Espresso.pressBack");
     onView(isRoot()).perform(ViewActions.pressBack());
   }
 
@@ -158,7 +148,6 @@ public final class Espresso {
    */
   @SuppressWarnings("unchecked")
   public static void openActionBarOverflowOrOptionsMenu(Context context) {
-    usageTracker.trackUsage("Espresso.openActionBarOverflowOrOptionsMenu");
     if (context.getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.HONEYCOMB) {
       // regardless of the os level of the device, this app will be rendering a menukey
       // in the virtual navigation bar (if present) or responding to hardware option keys on

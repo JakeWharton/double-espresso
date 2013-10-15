@@ -7,8 +7,6 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.hamcrest.Matchers.allOf;
 
-import com.google.android.apps.common.testing.testrunner.UsageTracker;
-import com.google.android.apps.common.testing.testrunner.UsageTrackerRegistry;
 import com.google.android.apps.common.testing.ui.espresso.action.AdapterDataLoaderAction;
 import com.google.android.apps.common.testing.ui.espresso.action.AdapterViewProtocol;
 import com.google.android.apps.common.testing.ui.espresso.action.AdapterViewProtocol.AdaptedData;
@@ -49,12 +47,6 @@ import org.hamcrest.TypeSafeMatcher;
  */
 public class DataInteraction {
 
-  private static final UsageTracker usageTracker;
-
-  static {
-    usageTracker = UsageTrackerRegistry.getInstance();
-  }
-
   private final Matcher<Object> dataMatcher;
   private Matcher<View> adapterMatcher = isAssignableFrom(AdapterView.class);
   private Optional<Matcher<View>> childViewMatcher = Optional.absent();
@@ -70,7 +62,6 @@ public class DataInteraction {
    * by Adapter.getView()
    */
   public DataInteraction onChildView(Matcher<View> childMatcher) {
-    usageTracker.trackUsage("Espresso.DataInteraction.onChildView");
     this.childViewMatcher = Optional.of(checkNotNull(childMatcher));
     return this;
   }
@@ -80,7 +71,6 @@ public class DataInteraction {
    * on the screen.
    */
   public DataInteraction inAdapterView(Matcher<View> adapterMatcher) {
-    usageTracker.trackUsage("Espresso.DataInteraction.inAdapterView");
     this.adapterMatcher = checkNotNull(adapterMatcher);
     return this;
   }
@@ -90,7 +80,6 @@ public class DataInteraction {
    * based on the data matcher.
    */
   public DataInteraction atPosition(Integer atPosition) {
-    usageTracker.trackUsage("Espresso.DataInteraction.atPosition");
     this.atPosition = Optional.of(checkNotNull(atPosition));
     return this;
   }
@@ -100,7 +89,6 @@ public class DataInteraction {
    * satisfy the AdapterView contract like (@code ExpandableListView)
    */
   public DataInteraction usingAdapterViewProtocol(AdapterViewProtocol adapterViewProtocol) {
-    usageTracker.trackUsage("Espresso.DataInteraction.usingAdapterViewProtocol");
     this.adapterViewProtocol = checkNotNull(adapterViewProtocol);
     return this;
   }

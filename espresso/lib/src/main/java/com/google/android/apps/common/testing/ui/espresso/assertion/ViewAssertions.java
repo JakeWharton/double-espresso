@@ -5,8 +5,6 @@ import static com.google.android.apps.common.testing.ui.espresso.util.TreeIterab
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.hamcrest.Matchers.is;
 
-import com.google.android.apps.common.testing.testrunner.UsageTracker;
-import com.google.android.apps.common.testing.testrunner.UsageTrackerRegistry;
 import com.google.android.apps.common.testing.ui.espresso.NoMatchingViewException;
 import com.google.android.apps.common.testing.ui.espresso.ViewAssertion;
 import com.google.android.apps.common.testing.ui.espresso.util.HumanReadables;
@@ -33,11 +31,6 @@ import java.util.List;
 public final class ViewAssertions {
 
   private static final String TAG = ViewAssertions.class.getSimpleName();
-  private static final UsageTracker usageTracker;
-
-  static {
-    usageTracker = UsageTrackerRegistry.getInstance();
-  }
 
 
   private ViewAssertions() {}
@@ -47,7 +40,6 @@ public final class ViewAssertions {
    * hierarchy.
    */
   public static ViewAssertion doesNotExist() {
-    usageTracker.trackUsage("Espresso.ViewAssertions.doesNotExist");
     return new ViewAssertion() {
       @Override
       public void check(Optional<View> view, Optional<NoMatchingViewException> noView) {
@@ -64,7 +56,6 @@ public final class ViewAssertions {
    * and is matched by the given view matcher.
    */
   public static ViewAssertion matches(final Matcher<? super View> viewMatcher) {
-    usageTracker.trackUsage("Espresso.ViewAssertions.matches");
     checkNotNull(viewMatcher);
     return new ViewAssertion() {
       @Override
@@ -98,7 +89,6 @@ public final class ViewAssertions {
    */
   public static ViewAssertion selectedDescendantsMatch(
       final Matcher<View> selector, final Matcher<View> matcher) {
-    usageTracker.trackUsage("Espresso.ViewAssertions.selectedDescendantsMatch");
     return new ViewAssertion() {
       @SuppressWarnings("unchecked")
       @Override

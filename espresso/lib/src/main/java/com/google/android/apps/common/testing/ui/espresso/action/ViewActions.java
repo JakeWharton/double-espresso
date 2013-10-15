@@ -2,8 +2,6 @@ package com.google.android.apps.common.testing.ui.espresso.action;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.android.apps.common.testing.testrunner.UsageTracker;
-import com.google.android.apps.common.testing.testrunner.UsageTrackerRegistry;
 import com.google.android.apps.common.testing.ui.espresso.ViewAction;
 
 import android.view.KeyEvent;
@@ -12,12 +10,6 @@ import android.view.KeyEvent;
  * A collection of common {@link ViewActions}.
  */
 public final class ViewActions {
-
-  private static final UsageTracker usageTracker;
-
-  static {
-    usageTracker = UsageTrackerRegistry.getInstance();
-  }
 
   private ViewActions() {}
 
@@ -30,7 +22,6 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction clearText() {
-    usageTracker.trackUsage("Espresso.ViewActions.clearText");
     return new ClearTextAction();
   }
 
@@ -43,7 +34,6 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction click() {
-    usageTracker.trackUsage("Espresso.ViewActions.click");
     return new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.PINPOINT);
   }
 
@@ -67,7 +57,6 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction click(ViewAction rollbackAction) {
-    usageTracker.trackUsage("Espresso.ViewActions.click(ViewAction)");
     checkNotNull(rollbackAction);
     return new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.PINPOINT,
         rollbackAction);
@@ -77,7 +66,6 @@ public final class ViewActions {
    * Returns an action that closes soft keyboard. If the keyboard is already closed, it is a no-op.
    */
   public static ViewAction closeSoftKeyboard() {
-    usageTracker.trackUsage("Espresso.ViewActions.closeSoftKeyboard");
     return new CloseKeyboardAction();
   }
 
@@ -86,7 +74,6 @@ public final class ViewActions {
    * (Input Method Editor). The selected view will have its onEditorAction method called.
    */
   public static ViewAction pressImeActionButton() {
-    usageTracker.trackUsage("Espresso.ViewActions.pressImeActionButton");
     return new EditorAction();
   }
 
@@ -94,7 +81,6 @@ public final class ViewActions {
    * Returns an action that clicks the back button.
    */
   public static ViewAction pressBack() {
-    usageTracker.trackUsage("Espresso.ViewActions.pressBack");
     return pressKey(KeyEvent.KEYCODE_BACK);
   }
 
@@ -102,7 +88,6 @@ public final class ViewActions {
    * Returns an action that presses the hardware menu key.
    */
   public static ViewAction pressMenuKey() {
-    usageTracker.trackUsage("Espresso.ViewActions.pressMenuKey");
     return pressKey(KeyEvent.KEYCODE_MENU);
   }
 
@@ -110,7 +95,6 @@ public final class ViewActions {
    * Returns an action that presses the key specified by the keyCode (eg. Keyevent.KEYCODE_BACK).
    */
   public static ViewAction pressKey(int keyCode) {
-    usageTracker.trackUsage("Espresso.ViewActions.pressKey(int)");
     return new KeyEventAction(new EspressoKey.Builder().withKeyCode(keyCode).build());
   }
 
@@ -118,7 +102,6 @@ public final class ViewActions {
    * Returns an action that presses the specified key with the specified modifiers.
    */
   public static ViewAction pressKey(EspressoKey key) {
-    usageTracker.trackUsage("Espresso.ViewActions.pressKey(EspressoKey)");
     return new KeyEventAction(key);
   }
 
@@ -131,7 +114,6 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction doubleClick() {
-    usageTracker.trackUsage("Espresso.ViewActions.doubleClick");
     return new GeneralClickAction(Tap.DOUBLE, GeneralLocation.CENTER, Press.PINPOINT);
   }
 
@@ -145,7 +127,6 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction longClick() {
-    usageTracker.trackUsage("Espresso.ViewActions.longClick");
     return new GeneralClickAction(Tap.LONG, GeneralLocation.CENTER, Press.PINPOINT);
   }
 
@@ -159,7 +140,6 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction scrollTo() {
-    usageTracker.trackUsage("Espresso.ViewActions.scrollTo");
     return new ScrollToAction();
   }
 
@@ -174,7 +154,6 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction typeText(String stringToBeTyped) {
-    usageTracker.trackUsage("Espresso.ViewActions.typeText");
     return new TypeTextAction(stringToBeTyped);
   }
 }
