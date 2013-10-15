@@ -1,5 +1,6 @@
 package com.google.android.apps.common.testing.ui.espresso.base;
 
+import static com.google.android.apps.common.testing.ui.espresso.matcher.RootMatchers.isDialog;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.RootMatchers.isFocusable;
 import static com.google.common.base.Preconditions.checkState;
 
@@ -8,6 +9,7 @@ import com.google.android.apps.common.testing.testrunner.Stage;
 import com.google.android.apps.common.testing.ui.espresso.NoMatchingRootException;
 import com.google.android.apps.common.testing.ui.espresso.Root;
 import com.google.android.apps.common.testing.ui.espresso.UiController;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 import android.app.Activity;
@@ -41,6 +43,8 @@ public final class RootViewPicker implements Provider<View> {
   private final ActivityLifecycleMonitor activityLifecycleMonitor;
   private final Matcher<Root> rootMatcher;
 
+  private List<Root> roots;
+
   @Inject
   RootViewPicker(Provider<List<Root>> rootsOracle, UiController uiController,
       ActivityLifecycleMonitor activityLifecycleMonitor, Matcher<Root> rootMatcher) {
@@ -73,10 +77,11 @@ public final class RootViewPicker implements Provider<View> {
       } else {
         // we've waited for the root view to be fully laid out and have window focus
         // for over 10 seconds. something is wrong.
-        throw new RuntimeException("Waited for the root of the view hierarchy to have window focus"
-            + " and not be requesting layout for over 10 seconds. If you specified a non default"
-            + " root matcher, it may be picking a root that never takes focus. Otherwise, something"
-            + " is seriously wrong. Root: " + root);
+        throw new RuntimeException(String.format("Waited for the root of the view hierarchy to have"
+            + " window focus and not be requesting layout for over 10 seconds. If you specified a"
+            + " non default root matcher, it may be picking a root that never takes focus."
+            + " Otherwise, something is seriously wrong. Selected Root:\n%s\n. All Roots:\n%s"
+            , root, Joiner.on("\n").join(roots)));
       }
 
       root = findRoot(rootMatcher);
@@ -99,7 +104,7 @@ public final class RootViewPicker implements Provider<View> {
   private Root findRoot(Matcher<Root> rootMatcher) {
     waitForAtLeastOneActivityToBeResumed();
 
-    List<Root> roots = rootsOracle.get();
+    roots = rootsOracle.get();
 
     // TODO(user): move these checks into the RootsOracle.
     if (roots.isEmpty()) {
@@ -178,6 +183,9 @@ public final class RootViewPicker implements Provider<View> {
     Root topSubpanel = subpanels.get(0);
     if (subpanels.size() >= 1) {
       for (Root subpanel : subpanels) {
+        if (isDialog().matches(subpanel)) {
+          return subpanel;
+        }
         if (subpanel.getWindowLayoutParams().get().type
             > topSubpanel.getWindowLayoutParams().get().type) {
           topSubpanel = subpanel;
