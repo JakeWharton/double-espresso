@@ -37,7 +37,7 @@ public class SendActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.send_activity);
 
-    EditText editText = (EditText) findViewById(R.id.enterDataEditText);
+    EditText editText = (EditText) findViewById(R.id.enter_data_edit_text);
     editText.setOnKeyListener(new OnKeyListener() {
 
       @Override
@@ -45,7 +45,7 @@ public class SendActivity extends Activity {
         if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
             (keyCode == KeyEvent.KEYCODE_ENTER)) {
           EditText editText = (EditText) view;
-          TextView responseText = (TextView) findViewById(R.id.enterDataResponseText);
+          TextView responseText = (TextView) findViewById(R.id.enter_data_response_text);
           responseText.setText(editText.getText());
           return true;
         } else {
@@ -54,12 +54,12 @@ public class SendActivity extends Activity {
       }
     });
 
-    final EditText searchBox = (EditText) findViewById(R.id.searchBox);
+    final EditText searchBox = (EditText) findViewById(R.id.search_box);
     searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override
       public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-          TextView result = (TextView) findViewById(R.id.searchResult);
+          TextView result = (TextView) findViewById(R.id.search_result);
           result.setText(getString(R.string.searching_for_label) + " " + v.getText());
           result.setVisibility(View.VISIBLE);
           InputMethodManager imm =
@@ -75,21 +75,21 @@ public class SendActivity extends Activity {
   /** Called when user clicks the Send button */
   public void sendData(@SuppressWarnings("unused") View view) {
     Intent intent = new Intent(this, DisplayActivity.class);
-    EditText editText = (EditText) findViewById(R.id.sendDataEditText);
+    EditText editText = (EditText) findViewById(R.id.send_data_edit_text);
     intent.putExtra(EXTRA_DATA, editText.getText().toString());
     startActivity(intent);
   }
 
   public void sendDataToCall(@SuppressWarnings("unused") View view) {
     Intent intentToCall = new Intent(Intent.ACTION_CALL);
-    EditText editText = (EditText) findViewById(R.id.sendDataToCallEditText);
+    EditText editText = (EditText) findViewById(R.id.send_data_to_call_edit_text);
     String number = editText.getText().toString();
     intentToCall.setData(Uri.parse("tel:" + number));
     startActivity(intentToCall);
   }
 
   public void sendDataToBrowser(@SuppressWarnings("unused") View view) {
-    EditText editText = (EditText) findViewById(R.id.sendDataToBrowserEditText);
+    EditText editText = (EditText) findViewById(R.id.send_data_to_browser_edit_text);
     String url = editText.getText().toString();
     Intent intentToBrowser = new Intent(Intent.ACTION_VIEW);
     intentToBrowser.setData(Uri.parse(url));
@@ -101,7 +101,7 @@ public class SendActivity extends Activity {
 
   public void sendMessage(@SuppressWarnings("unused") View view) {
     Intent sendIntent = new Intent();
-    EditText editText = (EditText) findViewById(R.id.sendDataToMessageEditText);
+    EditText editText = (EditText) findViewById(R.id.send_data_to_message_edit_text);
     sendIntent.setAction(Intent.ACTION_SEND);
     sendIntent.putExtra(Intent.EXTRA_TEXT, editText.getText().toString());
     sendIntent.setType("text/plain");
@@ -110,7 +110,7 @@ public class SendActivity extends Activity {
 
   public void clickToMarket(@SuppressWarnings("unused") View view) {
     Intent marketIntent = new Intent(Intent.ACTION_VIEW);
-    EditText editText = (EditText) findViewById(R.id.sendToMarketData);
+    EditText editText = (EditText) findViewById(R.id.send_to_market_data);
     marketIntent.setData(Uri.parse(
         "market://details?id=" + editText.getText().toString()));
     startActivity(marketIntent);
@@ -182,7 +182,7 @@ public class SendActivity extends Activity {
       if (resultCode == RESULT_OK) {
         // TODO(user): hook this up for real as shown in this example:
         // http://developer.android.com/training/basics/intents/result.html
-        TextView textView = (TextView) findViewById(R.id.phoneNumber);
+        TextView textView = (TextView) findViewById(R.id.phone_number);
         textView.setText(data.getExtras().getString("phone"));
       }
     }

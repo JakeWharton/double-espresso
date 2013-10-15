@@ -10,12 +10,20 @@ import static com.google.android.apps.common.testing.ui.espresso.sample.LongList
 import static com.google.android.apps.common.testing.ui.espresso.sample.LongListMatchers.withItemContent;
 import static com.google.android.apps.common.testing.ui.espresso.sample.LongListMatchers.withItemSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 import com.google.android.apps.common.testing.ui.testapp.LongListActivity;
 import com.google.android.apps.common.testing.ui.testapp.R;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Demonstrates the usage of
@@ -85,5 +93,37 @@ public class AdapterViewTest extends ActivityInstrumentationTestCase2<LongListAc
 
     onView(withId(R.id.selection_row_value))
       .check(matches(withText("100")));
+  }
+
+  @SuppressWarnings("unchecked")
+  public void testDataItemNotInAdapter(){
+    onView(withId(R.id.list))
+      .check(matches(not(withAdaptedData(withItemContent("item: 168")))));
+  }
+
+  private static Matcher<View> withAdaptedData(final Matcher<Object> dataMatcher) {
+    return new TypeSafeMatcher<View>() {
+
+      @Override
+      public void describeTo(Description description) {
+        description.appendText("with class name: ");
+        dataMatcher.describeTo(description);
+      }
+
+      @Override
+      public boolean matchesSafely(View view) {
+        if (!(view instanceof AdapterView)) {
+          return false;
+        }
+        @SuppressWarnings("rawtypes")
+        Adapter adapter = ((AdapterView) view).getAdapter();
+        for (int i = 0; i < adapter.getCount(); i++) {
+          if (dataMatcher.matches(adapter.getItem(i))) {
+            return true;
+          }
+        }
+        return false;
+      }
+    };
   }
 }

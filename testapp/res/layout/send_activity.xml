@@ -10,277 +10,278 @@
     android:fillViewport="true"
     android:orientation="vertical" >
 
-  <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/sendTitle"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/send_title"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:onClick="sendData"
-        android:clickable="true" />
+        android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/sendDataEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/send_hint" />
+        <TextView
+            android:id="@+id/send_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:onClick="sendData"
+            android:text="@string/send_title"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/sendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/button_send"
-        android:onClick="sendData" />
+        <EditText
+            android:id="@+id/send_data_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/send_hint" />
 
-    <EditText
-        android:id="@+id/enterDataEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/enter_hint" />
+        <Button
+            android:id="@+id/send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="sendData"
+            android:text="@string/button_send" />
 
-    <TextView
-        android:id="@+id/enterDataResponseText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <EditText
+            android:id="@+id/enter_data_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/enter_hint" />
 
-    <TextView
-        android:id="@+id/call"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/send_intent_to_call"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView
+            android:id="@+id/enter_data_response_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <EditText
-        android:id="@+id/sendDataToCallEditText"
-        android:layout_width="229dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/send_hint_for_call" />
+        <TextView
+            android:id="@+id/call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/send_intent_to_call"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/sendToCallButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/button_call"
-        android:onClick="sendDataToCall" />
+        <EditText
+            android:id="@+id/send_data_to_call_edit_text"
+            android:layout_width="229dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/send_hint_for_call" />
 
-    <TextView
-        android:id="@+id/sendDataMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/send_message"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <Button
+            android:id="@+id/send_to_call_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="sendDataToCall"
+            android:text="@string/button_call" />
 
-    <EditText
-        android:id="@+id/sendDataToMessageEditText"
-        android:layout_width="290dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/send_hint"
-        android:text="@string/send_data_to_message_edit_text" />
+        <TextView
+            android:id="@+id/send_data_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/send_message"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/sendMessageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/button_to_message"
-        android:onClick="sendMessage" />
+        <EditText
+            android:id="@+id/send_data_to_message_edit_text"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/send_hint"
+            android:text="@string/send_data_to_message_edit_text" />
 
-    <TextView
-        android:id="@+id/gotoBrowser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/send_intent_to_browser"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <Button
+            android:id="@+id/send_message_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="sendMessage"
+            android:text="@string/button_to_message" />
 
-    <EditText
-        android:id="@+id/sendDataToBrowserEditText"
-        android:layout_width="290dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/send_hint" />
+        <TextView
+            android:id="@+id/goto_browser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/send_intent_to_browser"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/sendToBrowserButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/button_to_browser"
-        android:onClick="sendDataToBrowser" />
+        <EditText
+            android:id="@+id/send_data_to_browser_edit_text"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/send_hint" />
 
-    <TextView
-        android:id="@+id/pickContactTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/pick_title"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <Button
+            android:id="@+id/send_to_browser_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="sendDataToBrowser"
+            android:text="@string/button_to_browser" />
 
-    <Button
-        android:id="@+id/pickButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/button_pick"
-        android:onClick="pickContact" />
+        <TextView
+            android:id="@+id/pick_contact_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/pick_title"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/phoneNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" />
+        <Button
+            android:id="@+id/pick_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="pickContact"
+            android:text="@string/button_pick" />
 
-    <TextView
-        android:id="@+id/market"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/send_intent_to_market"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView
+            android:id="@+id/phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
 
-    <EditText
-        android:id="@+id/sendToMarketData"
-        android:layout_width="229dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="@string/send_hint_to_market" />
+        <TextView
+            android:id="@+id/market"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/send_intent_to_market"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/sendToMarketButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/button_market"
-        android:onClick="clickToMarket" />
+        <EditText
+            android:id="@+id/send_to_market_data"
+            android:layout_width="229dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="@string/send_hint_to_market" />
 
-    <EditText
-        android:id="@+id/searchBox"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:hint="search box"
-        android:inputType="text"
-        android:imeOptions="actionSearch" />
+        <Button
+            android:id="@+id/send_to_market_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="clickToMarket"
+            android:text="@string/button_market" />
 
-    <TextView
-        android:id="@+id/searchResult"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:visibility="invisible"/>
+        <EditText
+            android:id="@+id/search_box"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:hint="search box"
+            android:imeOptions="actionSearch"
+            android:inputType="text" />
 
-    <TextView
-        android:id="@+id/weirdTextTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Delegating Edit Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView
+            android:id="@+id/search_result"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="invisible" />
 
-    <com.google.android.apps.common.testing.ui.testapp.DelegatingEditText
-        android:id="@+id/delegatingEditText"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" />
+        <TextView
+            android:id="@+id/weird_text_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Delegating Edit Text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/gestureTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/gesture_title"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <com.google.android.apps.common.testing.ui.testapp.DelegatingEditText
+            android:id="@+id/delegating_edit_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
 
-    <Button
-        android:id="@+id/goToGestureActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/button_gesture"
-        android:onClick="clickToGesture" />
+        <TextView
+            android:id="@+id/gesture_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/gesture_title"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/scrollButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/launch_scroll_activity"
-        android:onClick="clickToScroll" />
+        <Button
+            android:id="@+id/go_to_gesture_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="clickToGesture"
+            android:text="@string/button_gesture" />
 
-     <Button
-        android:id="@+id/listButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/launch_list_activity"
-        android:onClick="clickToList" />
+        <Button
+            android:id="@+id/scroll_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="clickToScroll"
+            android:text="@string/launch_scroll_activity" />
 
-    <Button
-        android:id="@+id/makeAlertDialog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/make_alert_dialog_button"
-        android:onClick="showDialog" />
+        <Button
+            android:id="@+id/list_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="clickToList"
+            android:text="@string/launch_list_activity" />
 
-    <Button
-        android:id="@+id/makePopupMenuButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/make_popup_menu_button"
-        android:onClick="showPopupMenu" />
+        <Button
+            android:id="@+id/make_alert_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="showDialog"
+            android:text="@string/make_alert_dialog_button" />
 
-    <Button
-        android:id="@+id/makePopupViewButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/make_popup_view_button"
-        android:onClick="showPopupView" />
+        <Button
+            android:id="@+id/make_popup_menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="showPopupMenu"
+            android:text="@string/make_popup_menu_button" />
 
-    <!-- Keep this on bottom to test scrolling to views that are not showing. -->
-    <!-- Huge top margin to guarantee this being out of view on large screen layout. -->
-    <Button
-        android:id="@+id/bottomSendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1000dp"
-        android:text="@string/button_send_bottom"
-        android:onClick="sendData" />
+        <Button
+            android:id="@+id/make_popup_view_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClick="showPopupView"
+            android:text="@string/make_popup_view_button" />
 
-    <TextView
-        android:id="@+id/bottomSendTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="1000dp"
-        android:text="@string/send_title"
-        android:onClick="sendData"
-        android:clickable="true" />
+        <!-- Keep this on bottom to test scrolling to views that are not showing. -->
+        <!-- Huge top margin to guarantee this being out of view on large screen layout. -->
 
-  </LinearLayout>
+        <Button
+            android:id="@+id/bottom_send_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1000dp"
+            android:onClick="sendData"
+            android:text="@string/button_send_bottom" />
+
+        <TextView
+            android:id="@+id/bottom_send_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1000dp"
+            android:clickable="true"
+            android:onClick="sendData"
+            android:text="@string/send_title" />
+    </LinearLayout>
+
 </ScrollView>

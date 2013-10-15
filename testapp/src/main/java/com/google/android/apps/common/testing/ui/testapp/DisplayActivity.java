@@ -14,7 +14,7 @@ public class DisplayActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.display_activity);
-    TextView textView = (TextView) findViewById(R.id.displayData);
+    TextView textView = (TextView) findViewById(R.id.display_data);
     textView.setText(getIntent().getStringExtra(SendActivity.EXTRA_DATA));
   }
 }

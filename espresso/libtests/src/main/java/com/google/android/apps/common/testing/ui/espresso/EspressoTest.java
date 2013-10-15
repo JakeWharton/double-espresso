@@ -77,7 +77,7 @@ public class EspressoTest extends ActivityInstrumentationTestCase2<MainActivity>
     onData(allOf(instanceOf(Map.class), hasValue(SendActivity.class.getSimpleName())))
         .perform(click());
 
-    onView(withId(R.id.enterDataEditText)).perform(new ViewAction() {
+    onView(withId(R.id.enter_data_edit_text)).perform(new ViewAction() {
       @Override
       public Matcher<View> getConstraints() {
         return anything();
@@ -97,11 +97,11 @@ public class EspressoTest extends ActivityInstrumentationTestCase2<MainActivity>
       }
     });
 
-    onView(withId(R.id.enterDataEditText)).perform(ViewActions.closeSoftKeyboard());
+    onView(withId(R.id.enter_data_edit_text)).perform(ViewActions.closeSoftKeyboard());
   }
 
   public void testSetFailureHandler() {
-    final AtomicBoolean handled = new AtomicBoolean(false); 
+    final AtomicBoolean handled = new AtomicBoolean(false);
     Espresso.setFailureHandler(new FailureHandler() {
       @Override
       public void handle(Throwable error, Matcher<View> viewMatcher) {

@@ -97,7 +97,7 @@ public class GestureActivity extends Activity {
   public void onCreate(Bundle icicle) {
     super.onCreate(icicle);
     setContentView(R.layout.gesture_activity);
-    gestureArea = findViewById(R.id.gestureArea);
+    gestureArea = findViewById(R.id.gesture_area);
     final GestureDetector simpleDetector = new GestureDetector(this, new GestureListener());
     simpleDetector.setIsLongpressEnabled(true);
     simpleDetector.setOnDoubleTapListener(new DoubleTapListener());
@@ -130,7 +130,7 @@ public class GestureActivity extends Activity {
     public boolean onDoubleTap(MotionEvent e) {
       doubleTaps.add(MotionEvent.obtain(e));
       Log.v(TAG, "onDoubleTap: " + e);
-      setVisible(R.id.textDoubleClick);
+      setVisible(R.id.text_double_click);
       return false;
     }
 
@@ -161,7 +161,7 @@ public class GestureActivity extends Activity {
     public boolean onSingleTapUp(MotionEvent e) {
       singleTaps.add(MotionEvent.obtain(e));
       Log.v(TAG, "on single tap: " + e);
-      setVisible(R.id.textClick);
+      setVisible(R.id.text_click);
       return false;
     }
 
@@ -170,7 +170,7 @@ public class GestureActivity extends Activity {
       scrollEvents.add(MotionEvent.obtain(e1));
       scrollEvents.add(MotionEvent.obtain(e2));
       Log.v(TAG, "Scroll: e1: " + e1 + " e2: " + e2 + " distX: " + distX + " distY: " + distY);
-      setVisible(R.id.textSwipe);
+      setVisible(R.id.text_swipe);
       return false;
     }
 
@@ -184,7 +184,7 @@ public class GestureActivity extends Activity {
     public void onLongPress(MotionEvent e) {
       longPressEvents.add(MotionEvent.obtain(e));
       Log.v(TAG, "LongPress: " + e);
-      setVisible(R.id.textLongClick);
+      setVisible(R.id.text_long_click);
     }
 
     @Override
@@ -200,9 +200,9 @@ public class GestureActivity extends Activity {
   }
 
   private void hideAll() {
-    findViewById(R.id.textClick).setVisibility(View.GONE);
-    findViewById(R.id.textLongClick).setVisibility(View.GONE);
-    findViewById(R.id.textSwipe).setVisibility(View.GONE);
-    findViewById(R.id.textDoubleClick).setVisibility(View.GONE);
+    findViewById(R.id.text_click).setVisibility(View.GONE);
+    findViewById(R.id.text_long_click).setVisibility(View.GONE);
+    findViewById(R.id.text_swipe).setVisibility(View.GONE);
+    findViewById(R.id.text_double_click).setVisibility(View.GONE);
   }
 }

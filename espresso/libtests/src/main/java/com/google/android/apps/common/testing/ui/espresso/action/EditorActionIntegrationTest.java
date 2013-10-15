@@ -39,18 +39,18 @@ public class EditorActionIntegrationTest extends ActivityInstrumentationTestCase
   @SuppressWarnings("unchecked")
   public void testPressImeActionButtonOnSearchBox() {
     String searchFor = "rainbows and unicorns";
-    onView(withId(R.id.searchBox)).perform(scrollTo(), ViewActions.typeText(searchFor));
-    onView(withId(R.id.searchBox))
+    onView(withId(R.id.search_box)).perform(scrollTo(), ViewActions.typeText(searchFor));
+    onView(withId(R.id.search_box))
         .check(matches(hasImeAction(EditorInfo.IME_ACTION_SEARCH)))
         .perform(pressImeActionButton());
-    onView(withId(R.id.searchResult)).perform(scrollTo());
-    onView(withId(R.id.searchResult))
+    onView(withId(R.id.search_result)).perform(scrollTo());
+    onView(withId(R.id.search_result))
         .check(matches(allOf(isDisplayed(), withText(containsString(searchFor)))));
   }
 
   public void testPressImeActionButtonOnNonEditorWidget() {
     try {
-      onView(withId(R.id.sendButton)).perform(pressImeActionButton());
+      onView(withId(R.id.send_button)).perform(pressImeActionButton());
       fail("Expected exception on previous call");
     } catch (PerformException expected) {
       assertTrue(expected.getCause() instanceof IllegalStateException);
@@ -58,6 +58,6 @@ public class EditorActionIntegrationTest extends ActivityInstrumentationTestCase
   }
 
   public void testPressSearchOnDefaultEditText() {
-    onView(withId(R.id.enterDataEditText)).perform(pressImeActionButton());
+    onView(withId(R.id.enter_data_edit_text)).perform(pressImeActionButton());
   }
 }

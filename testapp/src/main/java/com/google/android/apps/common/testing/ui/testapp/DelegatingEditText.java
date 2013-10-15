@@ -30,8 +30,8 @@ public class DelegatingEditText extends LinearLayout {
     mContext = context;
     LayoutInflater inflater = LayoutInflater.from(context);
     inflater.inflate(R.layout.delegating_edit_text, this, /* attachToRoot */ true);
-    messageView = (TextView) findViewById(R.id.EditTextMessage);
-    delegateEditText = (EditText) findViewById(R.id.DelegateEditText);
+    messageView = (TextView) findViewById(R.id.edit_text_message);
+    delegateEditText = (EditText) findViewById(R.id.delegate_edit_text);
     delegateEditText.setOnEditorActionListener(new OnEditorActionListener() {
       @Override
       public boolean onEditorAction(TextView v, int actionCode, KeyEvent event) {

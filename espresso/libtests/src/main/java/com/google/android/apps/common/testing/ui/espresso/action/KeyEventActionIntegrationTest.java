@@ -124,12 +124,12 @@ public class KeyEventActionIntegrationTest extends ActivityInstrumentationTestCa
   public void testPressKeyWithKeyCode() {
     getActivity();
     onData(allOf(instanceOf(Map.class), hasValue("SendActivity"))).perform(click());
-    onView(withId(R.id.enterDataEditText)).perform(click());
-    onView(withId(R.id.enterDataEditText)).perform(ViewActions.pressKey(KeyEvent.KEYCODE_X));
-    onView(withId(R.id.enterDataEditText)).perform(ViewActions.pressKey(KeyEvent.KEYCODE_Y));
-    onView(withId(R.id.enterDataEditText)).perform(ViewActions.pressKey(KeyEvent.KEYCODE_Z));
-    onView(withId(R.id.enterDataEditText)).perform(ViewActions.pressKey(KeyEvent.KEYCODE_ENTER));
-    onView(allOf(withId(R.id.enterDataResponseText), withText("xyz")))
+    onView(withId(R.id.enter_data_edit_text)).perform(click());
+    onView(withId(R.id.enter_data_edit_text)).perform(ViewActions.pressKey(KeyEvent.KEYCODE_X));
+    onView(withId(R.id.enter_data_edit_text)).perform(ViewActions.pressKey(KeyEvent.KEYCODE_Y));
+    onView(withId(R.id.enter_data_edit_text)).perform(ViewActions.pressKey(KeyEvent.KEYCODE_Z));
+    onView(withId(R.id.enter_data_edit_text)).perform(ViewActions.pressKey(KeyEvent.KEYCODE_ENTER));
+    onView(allOf(withId(R.id.enter_data_response_text), withText("xyz")))
         .check(matches(isDisplayed()));
   }
 }

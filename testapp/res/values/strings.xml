@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="button_send">Send</string>
     <string name="button_send_bottom">Send Bottom</string>
     <string name="button_call">Call</string>
@@ -35,12 +36,12 @@
     <string name="popup_title">A popup window</string>
     <string name="gesture_title">Show Gesture Activity</string>
     <string name="text_click">Click</string>
-    <string name="text_longClick">Long Click</string>
+    <string name="text_long_click">Long Click</string>
     <string name="text_swipe">Swipe</string>
-    <string name="text_doubleClick">Double Click</string>
+    <string name="text_double_click">Double Click</string>
     <string name="text_empty"></string>
-    <string name="text_show">Show</string>
-    <string name="text_hide">Hide</string>
+    <string name="text_show">Show context actionbar</string>
+    <string name="text_hide">Hide context actionbar</string>
     <string name="text_simple">Message</string>
     <string name="popup_item_1_text">Popup Item 1</string>
     <string name="popup_item_2_text">Popup Item 2</string>
@@ -56,6 +57,7 @@
     <string name="column_label">clicked on column:</string>
     <string name="hello_world">hello world!</string>
     <string name="request_hello_world">Request hello world</string>
+
     <string-array name="spinner_array">
         <item>Espresso</item>
         <item>Doppio</item>
@@ -65,4 +67,5 @@
         <item>Mocha</item>
         <item>Late</item>
     </string-array>
+
 </resources>

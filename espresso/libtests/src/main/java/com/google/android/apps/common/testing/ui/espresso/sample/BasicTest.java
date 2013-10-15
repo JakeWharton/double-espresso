@@ -58,7 +58,7 @@ public class BasicTest extends ActivityInstrumentationTestCase2<SimpleActivity> 
     // Clicking launches a new activity that shows the text entered above. You don't need to do
     // anything special to handle the activity transitions. Espresso takes care of waiting for the
     // new activity to be resumed and its view hierarchy to be laid out.
-    onView(withId(R.id.displayData))
+    onView(withId(R.id.display_data))
         .check(matches(withText(("Have a cup of Espresso."))));
 
     // Going back to the previous activity - lets make sure our text was perserved.
@@ -82,10 +82,6 @@ public class BasicTest extends ActivityInstrumentationTestCase2<SimpleActivity> 
     onView(withId(R.id.spinnertext_simple))
       .check(matches(withText(containsString("Americano"))));
   }
-} 
-
-
-
-
+}
 
 

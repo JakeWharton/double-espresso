@@ -37,22 +37,22 @@ public class TypeTextActionIntegrationTest extends ActivityInstrumentationTestCa
   }
 
   public void testTypeTextActionPerform() {
-    onView(withId(is(R.id.sendDataToCallEditText))).perform(typeText("Hello!"));
+    onView(withId(is(R.id.send_data_to_call_edit_text))).perform(typeText("Hello!"));
   }
 
   @SuppressWarnings("unchecked")
   public void testTypeTextActionPerformWithEnter() {
-    onView(withId(R.id.enterDataEditText)).perform(typeText("Hello World!\n"));
-    onView(allOf(withId(R.id.enterDataResponseText), withText("Hello World!")))
+    onView(withId(R.id.enter_data_edit_text)).perform(typeText("Hello World!\n"));
+    onView(allOf(withId(R.id.enter_data_response_text), withText("Hello World!")))
         .check(matches(isDisplayed()));
   }
 
   @SuppressWarnings("unchecked")
   public void testTypeTextInDelegatedEditText() {
     String toType = "honeybadger doesn't care";
-    onView(allOf(withParent(withId(R.id.delegatingEditText)), withId(R.id.DelegateEditText)))
+    onView(allOf(withParent(withId(R.id.delegating_edit_text)), withId(R.id.delegate_edit_text)))
         .perform(scrollTo(), typeText(toType), pressImeActionButton());
-    onView(withId(R.id.EditTextMessage))
+    onView(withId(R.id.edit_text_message))
       .perform(scrollTo())
       .check(matches(withText(containsString(toType))));
   }

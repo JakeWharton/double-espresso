@@ -46,8 +46,8 @@ public class EventActionIntegrationTest extends ActivityInstrumentationTestCase2
   public void testClick() {
     onView(withText(is(getActivity().getString(R.string.text_click))))
         .check(matches(not(isDisplayed())));
-    onView(withId(is(R.id.gestureArea))).perform(click());
-    onView(withId(is(R.id.textClick))).check(matches(isDisplayed()));
+    onView(withId(is(R.id.gesture_area))).perform(click());
+    onView(withId(is(R.id.text_click))).check(matches(isDisplayed()));
     onView(withText(is(getActivity().getString(R.string.text_click))))
         .check(matches(isDisplayed()));
   }
@@ -57,7 +57,7 @@ public class EventActionIntegrationTest extends ActivityInstrumentationTestCase2
         .check(matches(not(isDisplayed())));
     getActivity().setTouchDelay(700);
 
-    onView(withId(is(R.id.gestureArea))).perform(click(
+    onView(withId(is(R.id.gesture_area))).perform(click(
         new ViewAction() {
           @Override
           public String getDescription() {
@@ -74,29 +74,29 @@ public class EventActionIntegrationTest extends ActivityInstrumentationTestCase2
         }));
 
 
-    onView(withId(is(R.id.textClick))).check(matches(isDisplayed()));
+    onView(withId(is(R.id.text_click))).check(matches(isDisplayed()));
     onView(withText(is(getActivity().getString(R.string.text_click))))
         .check(matches(isDisplayed()));
   }
 
   @SdkSuppress(bugId = -1, versions = {7, 8, 13})
   public void testLongClick() {
-    onView(withText(is(getActivity().getString(R.string.text_longClick))))
+    onView(withText(is(getActivity().getString(R.string.text_long_click))))
         .check(matches(not(isDisplayed())));
-    onView(withId(is(R.id.gestureArea))).perform(longClick());
-    onView(withId(is(R.id.textLongClick))).check(matches(isDisplayed()));
-    onView(withText(is(getActivity().getString(R.string.text_longClick))))
+    onView(withId(is(R.id.gesture_area))).perform(longClick());
+    onView(withId(is(R.id.text_long_click))).check(matches(isDisplayed()));
+    onView(withText(is(getActivity().getString(R.string.text_long_click))))
         .check(matches(isDisplayed()));
   }
 
   @SdkSuppress(bugId = -1, versions = {7, 8, 13})
   public void testDoubleClick() {
-    onView(withText(is(getActivity().getString(R.string.text_doubleClick))))
+    onView(withText(is(getActivity().getString(R.string.text_double_click))))
         .check(matches(not(ViewMatchers.isDisplayed())));
-    onView(withId(is(R.id.gestureArea))).perform(doubleClick());
-    onView(withId(is(R.id.textDoubleClick))).check(matches(isDisplayed()));
+    onView(withId(is(R.id.gesture_area))).perform(doubleClick());
+    onView(withId(is(R.id.text_double_click))).check(matches(isDisplayed()));
     onView(withText(is("Double Click"))).check(matches(isDisplayed()));
-    onView(withText(is(getActivity().getString(R.string.text_doubleClick))))
+    onView(withText(is(getActivity().getString(R.string.text_double_click))))
         .check(matches(isDisplayed()));
   }
 }

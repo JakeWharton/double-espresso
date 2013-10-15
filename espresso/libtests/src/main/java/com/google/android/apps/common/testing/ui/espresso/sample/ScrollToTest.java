@@ -36,7 +36,7 @@ public class ScrollToTest extends ActivityInstrumentationTestCase2<ScrollActivit
   // back-to-back on the same view.
   // Note - scrollTo is a no-op if the view is already displayed on the screen.
   public void testScrollToInScrollView() {
-    onView(withId(is(R.id.bottomLeft)))
+    onView(withId(is(R.id.bottom_left)))
       .perform(scrollTo(), click());
   }
 }

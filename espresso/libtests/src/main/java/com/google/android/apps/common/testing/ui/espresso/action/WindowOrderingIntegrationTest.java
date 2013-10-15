@@ -40,7 +40,7 @@ public class WindowOrderingIntegrationTest extends ActivityInstrumentationTestCa
     }
     onView(withText(R.string.item_1_text))
         .check(doesNotExist());
-    onView(withId(R.id.makePopupMenuButton))
+    onView(withId(R.id.make_popup_menu_button))
         .perform(scrollTo(), click());
     onView(withText(R.string.item_1_text))
         .check(matches(isDisplayed()))
@@ -53,7 +53,7 @@ public class WindowOrderingIntegrationTest extends ActivityInstrumentationTestCa
     getActivity();
     onView(withId(R.id.popup_title))
         .check(doesNotExist());
-    onView(withId(R.id.makePopupViewButton))
+    onView(withId(R.id.make_popup_view_button))
         .perform(scrollTo(), click());
     onView(withId(R.id.popup_title))
         .check(matches(withText(R.string.popup_title)))
@@ -65,7 +65,7 @@ public class WindowOrderingIntegrationTest extends ActivityInstrumentationTestCa
   public void testDialog() {
     onView(withText(R.string.dialog_title))
         .check(doesNotExist());
-    onView(withId(R.id.makeAlertDialog))
+    onView(withId(R.id.make_alert_dialog))
         .perform(scrollTo(), click());
     onView(withText(R.string.dialog_title))
         .check(matches(isDisplayed()));

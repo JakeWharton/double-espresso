@@ -30,18 +30,18 @@ public class ClearTextActionIntegrationTest extends ActivityInstrumentationTestC
   public void testClearTextActionPerform() {
     Activity activity = getActivity();
     String text = activity.getText(R.string.send_data_to_message_edit_text).toString();
-    onView(withId(is(R.id.sendDataToMessageEditText))).check(matches(withText(is(text))));
-    onView(withId(is(R.id.sendDataToMessageEditText))).perform(clearText());
-    onView(withId(is(R.id.sendDataToMessageEditText))).check(matches(withText(is(""))));
+    onView(withId(is(R.id.send_data_to_message_edit_text))).check(matches(withText(is(text))));
+    onView(withId(is(R.id.send_data_to_message_edit_text))).perform(clearText());
+    onView(withId(is(R.id.send_data_to_message_edit_text))).check(matches(withText(is(""))));
   }
 
   @LargeTest
   public void testClearTextActionPerformWithTypeText() {
     Activity activity = getActivity();
     String text = activity.getText(R.string.send_data_to_message_edit_text).toString();
-    onView(withId(is(R.id.sendDataToCallEditText))).perform(typeText(text));
-    onView(withId(is(R.id.sendDataToCallEditText))).check(matches(withText(is(text))));
-    onView(withId(is(R.id.sendDataToCallEditText))).perform(clearText());
-    onView(withId(is(R.id.sendDataToCallEditText))).check(matches(withText(is(""))));
+    onView(withId(is(R.id.send_data_to_call_edit_text))).perform(typeText(text));
+    onView(withId(is(R.id.send_data_to_call_edit_text))).check(matches(withText(is(text))));
+    onView(withId(is(R.id.send_data_to_call_edit_text))).perform(clearText());
+    onView(withId(is(R.id.send_data_to_call_edit_text))).check(matches(withText(is(""))));
   }
 }

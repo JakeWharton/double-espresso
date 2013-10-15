@@ -109,7 +109,7 @@ public class UiControllerImplIntegrationTest
     getInstrumentation().runOnMainSync(new Runnable() {
       @Override
       public void run() {
-        final View view = sendActivity.findViewById(R.id.sendDataToCallEditText);
+        final View view = sendActivity.findViewById(R.id.send_data_to_call_edit_text);
         Log.i("TEST", HumanReadables.describe(view));
         requestFocusSucceded.set(view.requestFocus() && view.hasWindowFocus());
         Log.i("TEST-post", HumanReadables.describe(view));
@@ -147,7 +147,7 @@ public class UiControllerImplIntegrationTest
     getInstrumentation().runOnMainSync(new Runnable() {
       @Override
       public void run() {
-        final View view = sendActivity.findViewById(R.id.sendDataToCallEditText);
+        final View view = sendActivity.findViewById(R.id.send_data_to_call_edit_text);
         Log.i("TEST", HumanReadables.describe(view));
         requestFocusSucceded.set(view.requestFocus());
         Log.i("TEST-post", HumanReadables.describe(view));
@@ -185,7 +185,7 @@ public class UiControllerImplIntegrationTest
     getInstrumentation().runOnMainSync(new Runnable() {
       @Override
       public void run() {
-        final View view = sendActivity.findViewById(R.id.sendDataToCallEditText);
+        final View view = sendActivity.findViewById(R.id.send_data_to_call_edit_text);
         requestFocusSucceded.set(view.requestFocus());
         focusLatch.countDown();
       }
@@ -263,7 +263,7 @@ public class UiControllerImplIntegrationTest
 
   static int[] getCoordinatesInMiddleOfSendButton(
       Activity activity, Instrumentation instrumentation) {
-    final View sendButton = activity.findViewById(R.id.sendButton);
+    final View sendButton = activity.findViewById(R.id.send_button);
     final int[] xy = new int[2];
     instrumentation.runOnMainSync(new Runnable() {
       @Override

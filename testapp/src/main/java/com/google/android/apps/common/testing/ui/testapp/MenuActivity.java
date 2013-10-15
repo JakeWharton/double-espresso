@@ -23,7 +23,7 @@ public class MenuActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.menu_activity);
-    registerForContextMenu(findViewById(R.id.textContextMenu));
+    registerForContextMenu(findViewById(R.id.text_context_menu));
   }
 
   @Override
@@ -35,7 +35,7 @@ public class MenuActivity extends Activity {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    TextView text = (TextView) findViewById(R.id.textMenuResult);
+    TextView text = (TextView) findViewById(R.id.text_menu_result);
     text.setText(item.getTitle());
     return true;
   }
@@ -49,14 +49,14 @@ public class MenuActivity extends Activity {
 
   @Override
   public boolean onContextItemSelected(MenuItem item) {
-    TextView text = (TextView) findViewById(R.id.textMenuResult);
+    TextView text = (TextView) findViewById(R.id.text_menu_result);
     text.setText(item.getTitle());
     return true;
   }
 
   public void showPopup(View view) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-      TextView text = (TextView) findViewById(R.id.textMenuResult);
+      TextView text = (TextView) findViewById(R.id.text_menu_result);
       text.setText("Not supported in API " + Build.VERSION.SDK_INT);
     } else {
       PopupMenu popup = new PopupMenu(this, view);
@@ -74,7 +74,7 @@ public class MenuActivity extends Activity {
   private class PopupMenuListener implements OnMenuItemClickListener {
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-      TextView text = (TextView) findViewById(R.id.textMenuResult);
+      TextView text = (TextView) findViewById(R.id.text_menu_result);
       text.setText(item.getTitle());
       return true;
     }

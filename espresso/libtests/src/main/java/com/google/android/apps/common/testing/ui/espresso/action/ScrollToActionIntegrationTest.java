@@ -33,7 +33,7 @@ public class ScrollToActionIntegrationTest extends ActivityInstrumentationTestCa
   }
 
   public void testScrollDown() {
-    onView(withId(is(R.id.bottomLeft)))
+    onView(withId(is(R.id.bottom_left)))
       .check(matches(not(isDisplayed())))
       .perform(scrollTo())
       .check(matches(isDisplayed()))
@@ -41,18 +41,18 @@ public class ScrollToActionIntegrationTest extends ActivityInstrumentationTestCa
   }
 
   public void testScrollVerticalAndHorizontal() {
-    onView(withId(is(R.id.bottomRight)))
+    onView(withId(is(R.id.bottom_right)))
       .check(matches(not(isDisplayed())))
       .perform(scrollTo())
       .check(matches(isDisplayed()));
-    onView(withId(is(R.id.topLeft)))
+    onView(withId(is(R.id.top_left)))
       .check(matches(not(isDisplayed())))
       .perform(scrollTo())
       .check(matches(isDisplayed()));
   }
 
   public void testScrollWithinScroll() {
-    onView(withId(is(R.id.doubleScroll)))
+    onView(withId(is(R.id.double_scroll)))
       .check(matches(not(isDisplayed())))
       .perform(scrollTo())
       .check(matches(isDisplayed()));

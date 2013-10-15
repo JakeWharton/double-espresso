@@ -41,18 +41,18 @@ public class MenuTest extends ActivityInstrumentationTestCase2<MenuActivity> {
       return;
     }
     onView(withText(R.string.popup_item_1_text)).check(doesNotExist());
-    onView(withId(R.id.popupButton)).perform(click());
+    onView(withId(R.id.popup_button)).perform(click());
     onView(withText(R.string.popup_item_1_text)).check(matches(isDisplayed())).perform(click());
 
-    onView(withId(R.id.textMenuResult)).check(matches(withText(R.string.popup_item_1_text)));
+    onView(withId(R.id.text_menu_result)).check(matches(withText(R.string.popup_item_1_text)));
   }
 
   public void testContextMenu() {
     onView(withText(R.string.context_item_2_text)).check(doesNotExist());
-    onView(withId(R.id.textContextMenu)).perform(longClick());
+    onView(withId(R.id.text_context_menu)).perform(longClick());
     onView(withText(R.string.context_item_2_text)).check(matches(isDisplayed())).perform(click());
 
-    onView(withId(R.id.textMenuResult)).check(matches(withText(R.string.context_item_2_text)));
+    onView(withId(R.id.text_menu_result)).check(matches(withText(R.string.context_item_2_text)));
   }
 
   public void testOptionMenu() {
@@ -60,6 +60,6 @@ public class MenuTest extends ActivityInstrumentationTestCase2<MenuActivity> {
     onView(isRoot()).perform(pressMenuKey());
     onView(withText(R.string.options_item_3_text)).check(matches(isDisplayed())).perform(click());
 
-    onView(withId(R.id.textMenuResult)).check(matches(withText(R.string.options_item_3_text)));
+    onView(withId(R.id.text_menu_result)).check(matches(withText(R.string.options_item_3_text)));
   }
 }

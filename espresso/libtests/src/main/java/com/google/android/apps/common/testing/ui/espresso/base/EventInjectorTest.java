@@ -65,7 +65,7 @@ public class EventInjectorTest extends ActivityInstrumentationTestCase2<SendActi
     getInstrumentation().runOnMainSync(new Runnable() {
       @Override
       public void run() {
-        View view = sendActivity.findViewById(R.id.sendDataEditText);
+        View view = sendActivity.findViewById(R.id.send_data_edit_text);
         assertTrue(view.requestFocus());
         latch.countDown();
       }
@@ -84,7 +84,7 @@ public class EventInjectorTest extends ActivityInstrumentationTestCase2<SendActi
     getInstrumentation().runOnMainSync(new Runnable() {
       @Override
       public void run() {
-        View view = sendActivity.findViewById(R.id.sendDataEditText);
+        View view = sendActivity.findViewById(R.id.send_data_edit_text);
         assertTrue(view.requestFocus());
         latch.countDown();
       }
