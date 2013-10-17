@@ -10,13 +10,13 @@ import com.google.android.apps.common.testing.ui.testapp.R;
 import com.google.android.apps.common.testing.ui.testapp.ScrollActivity;
 
 import android.test.ActivityInstrumentationTestCase2;
-
+import android.test.suitebuilder.annotation.LargeTest;
 
 /**
  * Demonstrates the usage of
  * {@link com.google.android.apps.common.testing.ui.espresso.action.ViewActions#scrollTo()}.
  */
-
+@LargeTest
 public class ScrollToTest extends ActivityInstrumentationTestCase2<ScrollActivity> {
 
   @SuppressWarnings("deprecation")
