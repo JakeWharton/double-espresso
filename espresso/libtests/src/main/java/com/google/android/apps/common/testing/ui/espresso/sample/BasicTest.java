@@ -1,9 +1,10 @@
-package com.google.android.apps.common.testing.ui.espresso.sample;
+package com.google.android.apps.common.testing.ui.espresso.tests;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.pressBack;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.click;
+import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.closeSoftKeyboard;
 import static com.google.android.apps.common.testing.ui.espresso.action.ViewActions.typeText;
 import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewAssertions.matches;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
@@ -49,8 +50,9 @@ public class BasicTest extends ActivityInstrumentationTestCase2<SimpleActivity> 
   }
 
   public void testTypingAndPressBack() {
+    // Close soft keyboard after type to avoid issues on devices with soft keyboard.
     onView(withId(R.id.sendtext_simple))
-        .perform(typeText("Have a cup of Espresso."));
+        .perform(typeText("Have a cup of Espresso."), closeSoftKeyboard());
 
     onView(withId(R.id.send_simple))
         .perform(click());
@@ -83,5 +85,4 @@ public class BasicTest extends ActivityInstrumentationTestCase2<SimpleActivity> 
       .check(matches(withText(containsString("Americano"))));
   }
 }
-
 
