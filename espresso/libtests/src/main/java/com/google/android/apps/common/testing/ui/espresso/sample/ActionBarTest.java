@@ -12,6 +12,7 @@ import com.google.android.apps.common.testing.ui.testapp.ActionBarTestActivity;
 import com.google.android.apps.common.testing.ui.testapp.R;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.suitebuilder.annotation.LargeTest;
 
 /**
  * Demonstrates Espresso with action bar and contextual action mode. 
@@ -19,6 +20,7 @@ import android.test.ActivityInstrumentationTestCase2;
  * {@link openContextualActionModeOverflowMenu()} opens the overflow menu from an contextual action
  * mode.
  */
+@LargeTest
 public class ActionBarTest extends ActivityInstrumentationTestCase2<ActionBarTestActivity> {
   @SuppressWarnings("deprecation")
   public ActionBarTest() {
