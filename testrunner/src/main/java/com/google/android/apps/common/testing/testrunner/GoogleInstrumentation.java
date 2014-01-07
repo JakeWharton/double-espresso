@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.os.MessageQueue.IdleHandler;
 import android.util.Log;
 
+import java.io.File;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -102,6 +103,17 @@ extends ExposedInstrumentationApi {
     super.onCreate(arguments);
   }
 
+
+  protected final void specifyDexMakerCacheProperty() {
+    // DexMaker uses heuristics to figure out where to store its temporary dex files
+    // these heuristics may break (eg - they no longer work on JB MR2). So we create
+    // our own cache dir to be used if the app doesnt specify a cache dir, rather then
+    // relying on heuristics.
+    //
+
+    File dexCache = getTargetContext().getDir("dxmaker_cache", Context.MODE_PRIVATE);
+    System.getProperties().put("dexmaker.dexcache", dexCache.getAbsolutePath());
+  }
 
   private void tryLoadingIntentSpy() {
     // Wouldn't it be easier to call IntentSpyImpl.getInstance() and be done with it? We don't do
@@ -454,6 +466,7 @@ return GoogleInstrumentation.super.startActivitySync(intent);
     super.callActivityOnPause(activity);
     lifecycleMonitor.signalLifecycleChange(Stage.PAUSED, activity);
   }
+
 
   class ActivityFinisher implements Runnable {
     @Override
