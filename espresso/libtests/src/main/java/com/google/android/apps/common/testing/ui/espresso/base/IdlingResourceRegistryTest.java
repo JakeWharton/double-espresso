@@ -27,7 +27,7 @@ public class IdlingResourceRegistryTest extends InstrumentationTestCase {
   public void setUp() throws Exception {
     Looper looper = Looper.getMainLooper();
     handler = new Handler(looper);
-    registry = new IdlingResourceRegistry(looper);
+    registry = new IdlingResourceRegistry(looper, TimeUnit.SECONDS.toMillis(26));
   }
 
   public void testRegisterDuplicates() {

@@ -32,7 +32,6 @@ public final class IdlingResourceRegistry {
   private static final int IDLE_WARNING_REACHED = 3;
   private static final int POSSIBLE_RACE_CONDITION_DETECTED = 4;
 
-  private static final long TIMEOUT = TimeUnit.SECONDS.toMillis(26);
   private static final long TIMEOUT_WARNING_INTERVAL = TimeUnit.SECONDS.toMillis(5);
 
   private static final IdleNotificationCallback NO_OP_CALLBACK = new IdleNotificationCallback() {
@@ -53,13 +52,15 @@ public final class IdlingResourceRegistry {
   private final BitSet idleState = new BitSet();
   private final Looper looper;
   private final Handler handler;
+  private final long timeout;
 
   private IdleNotificationCallback idleNotificationCallback = NO_OP_CALLBACK;
 
   @Inject
-  public IdlingResourceRegistry(Looper looper) {
+  public IdlingResourceRegistry(Looper looper, @IdlingRegistryTimeoutMs long timeout) {
     this.looper = looper;
     this.handler = new Handler(looper, new Dispatcher());
+    this.timeout = timeout;
   }
 
   /**
@@ -132,7 +133,7 @@ public final class IdlingResourceRegistry {
     Message timeoutWarning = handler.obtainMessage(IDLE_WARNING_REACHED);
     handler.sendMessageDelayed(timeoutWarning, TIMEOUT_WARNING_INTERVAL);
     Message timeoutError = handler.obtainMessage(TIMEOUT_OCCURRED);
-    handler.sendMessageDelayed(timeoutError, TIMEOUT);
+    handler.sendMessageDelayed(timeoutError, timeout);
   }
 
   private List<String> getBusyResources() {
