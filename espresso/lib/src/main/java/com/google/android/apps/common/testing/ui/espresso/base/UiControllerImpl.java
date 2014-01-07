@@ -81,20 +81,27 @@ final class UiControllerImpl implements UiController, Handler.Callback {
       /**
        * Creates a message that when sent will raise the signal of this condition.
        */
-      public Message createSignal(Handler handler) {
-        return Message.obtain(handler, ordinal());
+      public Message createSignal(Handler handler, int myGeneration) {
+        return Message.obtain(handler, ordinal(), myGeneration, 0, null);
       }
 
       /**
        * Handles a message that is raising a signal and updates the condition set accordingly.
+       * Messages from a previous generation will be ignored.
        */
-      public static boolean handleMessage(Message message, BitSet conditionSet) {
+      public static boolean handleMessage(Message message, BitSet conditionSet,
+          int currentGeneration) {
         IdleCondition [] allConditions = values();
         if (message.what < 0 || message.what >= allConditions.length) {
           return false;
         } else {
           IdleCondition condition = allConditions[message.what];
-          condition.signal(conditionSet);
+          if (message.arg1 == currentGeneration) {
+            condition.signal(conditionSet);
+          } else {
+            Log.w(TAG, "ignoring signal of: " + condition + " from previous generation: " +
+                message.arg1 + " current generation: " + currentGeneration);
+          }
           return true;
         }
       }
@@ -124,6 +131,7 @@ final class UiControllerImpl implements UiController, Handler.Callback {
   private Handler controllerHandler;
   // only updated on main thread.
   private boolean looping = false;
+  private int generation = 0;
 
   @VisibleForTesting
   @Inject
@@ -156,12 +164,14 @@ final class UiControllerImpl implements UiController, Handler.Callback {
             return eventInjector.injectKeyEvent(event);
           }
         },
-        IdleCondition.KEY_INJECT_HAS_COMPLETED);
+        IdleCondition.KEY_INJECT_HAS_COMPLETED,
+        generation);
 
     // Inject the key event.
     keyEventExecutor.submit(injectTask);
 
     loopUntil(IdleCondition.KEY_INJECT_HAS_COMPLETED);
+
     try {
       checkState(injectTask.isDone(), "Key injection was signaled - but it wasnt done.");
       return injectTask.get();
@@ -191,7 +201,8 @@ final class UiControllerImpl implements UiController, Handler.Callback {
             return eventInjector.injectMotionEvent(event);
           }
         },
-        IdleCondition.MOTION_INJECTION_HAS_COMPLETED);
+        IdleCondition.MOTION_INJECTION_HAS_COMPLETED,
+        generation);
     keyEventExecutor.submit(injectTask);
     loopUntil(IdleCondition.MOTION_INJECTION_HAS_COMPLETED);
     try {
@@ -286,20 +297,22 @@ final class UiControllerImpl implements UiController, Handler.Callback {
       EnumSet<IdleCondition> condChecks = EnumSet.noneOf(IdleCondition.class);
       if (!asyncTaskMonitor.isIdleNow()) {
         asyncTaskMonitor.notifyWhenIdle(new SignalingTask<Void>(NO_OP,
-            IdleCondition.ASYNC_TASKS_HAVE_IDLED));
+            IdleCondition.ASYNC_TASKS_HAVE_IDLED, generation));
 
         condChecks.add(IdleCondition.ASYNC_TASKS_HAVE_IDLED);
       }
 
       if (!compatIdle()) {
         compatTaskMonitor.get().notifyWhenIdle(new SignalingTask<Void>(NO_OP,
-            IdleCondition.COMPAT_TASKS_HAVE_IDLED));
+            IdleCondition.COMPAT_TASKS_HAVE_IDLED, generation));
         condChecks.add(IdleCondition.COMPAT_TASKS_HAVE_IDLED);
       }
 
       if (!idlingResourceRegistry.allResourcesAreIdle()) {
         final IdlingPolicy warning = IdlingPolicies.getDynamicIdlingResourceWarningPolicy();
         final IdlingPolicy error = IdlingPolicies.getDynamicIdlingResourceErrorPolicy();
+        final SignalingTask<Void> idleSignal = new SignalingTask<Void>(NO_OP,
+            IdleCondition.DYNAMIC_TASKS_HAVE_IDLED, generation);
         idlingResourceRegistry.notifyWhenAllResourcesAreIdle(new IdleNotificationCallback() {
           @Override
           public void resourcesStillBusyWarning(List<String> busyResourceNames) {
@@ -309,21 +322,26 @@ final class UiControllerImpl implements UiController, Handler.Callback {
           @Override
           public void resourcesHaveTimedOut(List<String> busyResourceNames) {
             error.handleTimeout(busyResourceNames, "IdlingResources have timed out!");
-            controllerHandler.sendMessage(
-                IdleCondition.DYNAMIC_TASKS_HAVE_IDLED.createSignal(controllerHandler));
+            controllerHandler.post(idleSignal);
           }
 
           @Override
           public void allResourcesIdle() {
-            controllerHandler.sendMessage(
-                IdleCondition.DYNAMIC_TASKS_HAVE_IDLED.createSignal(controllerHandler));
+            controllerHandler.post(idleSignal);
           }
         });
         condChecks.add(IdleCondition.DYNAMIC_TASKS_HAVE_IDLED);
       }
 
-      loopUntil(condChecks);
-
+      try {
+        loopUntil(condChecks);
+      } finally {
+        asyncTaskMonitor.cancelIdleMonitor();
+        if (compatTaskMonitor.isPresent()) {
+          compatTaskMonitor.get().cancelIdleMonitor();
+        }
+        idlingResourceRegistry.cancelIdleMonitor();
+      }
     } while (!asyncTaskMonitor.isIdleNow() || !compatIdle()
         || !idlingResourceRegistry.allResourcesAreIdle());
 
@@ -344,15 +362,16 @@ final class UiControllerImpl implements UiController, Handler.Callback {
     checkState(!IdleCondition.DELAY_HAS_PAST.isSignaled(conditionSet), "recursion detected!");
 
     checkArgument(millisDelay > 0);
-    controllerHandler.sendMessageDelayed(
-        IdleCondition.DELAY_HAS_PAST.createSignal(controllerHandler), millisDelay);
+    controllerHandler.postDelayed(new SignalingTask(NO_OP, IdleCondition.DELAY_HAS_PAST,
+          generation),
+        millisDelay);
     loopUntil(IdleCondition.DELAY_HAS_PAST);
     loopMainThreadUntilIdle();
   }
 
   @Override
   public boolean handleMessage(Message msg) {
-    if (!IdleCondition.handleMessage(msg, conditionSet)) {
+    if (!IdleCondition.handleMessage(msg, conditionSet, generation)) {
       Log.i(TAG, "Unknown message type: " + msg);
       return false;
     } else {
@@ -364,6 +383,30 @@ final class UiControllerImpl implements UiController, Handler.Callback {
     loopUntil(EnumSet.of(condition));
   }
 
+  /**
+   * Loops the main thread until all IdleConditions have been signaled.
+   *
+   * Once they've been signaled, the conditions are reset and the generation value
+   * is incremented.
+   *
+   * Signals should only be raised thru SignalingTask instances, and care should be
+   * taken to ensure that the signaling task is created before loopUntil is called.
+   *
+   * Good:
+   * idlingType.runOnIdle(new SignalingTask(NO_OP, IdleCondition.MY_IDLE_CONDITION, generation));
+   * loopUntil(IdleCondition.MY_IDLE_CONDITION);
+   *
+   * Bad:
+   * idlingType.runOnIdle(new CustomCallback() {
+   *   @Override
+   *   public void itsDone() {
+   *     // oh no - The creation of this signaling task is delayed until this method is
+   *     // called, so it will not have the right value for generation.
+   *     new SignalingTask(NO_OP, IdleCondition.MY_IDLE_CONDITION, generation).run();
+   *  }
+   * })
+   * loopUntil(IdleCondition.MY_IDLE_CONDITION);
+   */
   private void loopUntil(EnumSet<IdleCondition> conditions) {
     checkState(!looping, "Recursive looping detected!");
     looping = true;
@@ -436,6 +479,7 @@ final class UiControllerImpl implements UiController, Handler.Callback {
           masterIdlePolicy.getIdleTimeoutUnit().name()));
     } finally {
       looping = false;
+      generation++;
       for (IdleCondition condition : conditions) {
         condition.reset(conditionSet);
       }
@@ -449,6 +493,7 @@ final class UiControllerImpl implements UiController, Handler.Callback {
     }
   }
 
+
   /**
    * Encapsulates posting a signal message to update the conditions set after a task has
    * executed.
@@ -456,15 +501,17 @@ final class UiControllerImpl implements UiController, Handler.Callback {
   private class SignalingTask<T> extends FutureTask<T> {
 
     private final IdleCondition condition;
+    private final int myGeneration;
 
-    public SignalingTask(Callable<T> callable, IdleCondition condition) {
+    public SignalingTask(Callable<T> callable, IdleCondition condition, int myGeneration) {
       super(callable);
       this.condition = checkNotNull(condition);
+      this.myGeneration = myGeneration;
     }
 
     @Override
     protected void done() {
-      controllerHandler.sendMessage(condition.createSignal(controllerHandler));
+      controllerHandler.sendMessage(condition.createSignal(controllerHandler, myGeneration));
     }
 
   }

@@ -32,6 +32,7 @@ public final class IdlingResourceRegistry {
   private static final int TIMEOUT_OCCURRED = 2;
   private static final int IDLE_WARNING_REACHED = 3;
   private static final int POSSIBLE_RACE_CONDITION_DETECTED = 4;
+  private static final Object TIMEOUT_MESSAGE_TAG = new Object();
 
   private static final IdleNotificationCallback NO_OP_CALLBACK = new IdleNotificationCallback() {
 
@@ -51,12 +52,14 @@ public final class IdlingResourceRegistry {
   private final BitSet idleState = new BitSet();
   private final Looper looper;
   private final Handler handler;
+  private final Dispatcher dispatcher;
   private IdleNotificationCallback idleNotificationCallback = NO_OP_CALLBACK;
 
   @Inject
   public IdlingResourceRegistry(Looper looper) {
     this.looper = looper;
-    this.handler = new Handler(looper, new Dispatcher());
+    this.dispatcher = new Dispatcher();
+    this.handler = new Handler(looper, dispatcher);
   }
 
   /**
@@ -136,12 +139,16 @@ public final class IdlingResourceRegistry {
     }
   }
 
+  void cancelIdleMonitor() {
+    dispatcher.deregister();
+  }
+
   private void scheduleTimeoutMessages() {
     IdlingPolicy warning = IdlingPolicies.getDynamicIdlingResourceWarningPolicy();
-    Message timeoutWarning = handler.obtainMessage(IDLE_WARNING_REACHED);
+    Message timeoutWarning = handler.obtainMessage(IDLE_WARNING_REACHED, TIMEOUT_MESSAGE_TAG);
     handler.sendMessageDelayed(timeoutWarning, warning.getIdleTimeoutUnit().toMillis(
         warning.getIdleTimeout()));
-    Message timeoutError = handler.obtainMessage(TIMEOUT_OCCURRED);
+    Message timeoutError = handler.obtainMessage(TIMEOUT_OCCURRED, TIMEOUT_MESSAGE_TAG);
     IdlingPolicy error = IdlingPolicies.getDynamicIdlingResourceErrorPolicy();
 
     handler.sendMessageDelayed(timeoutError, error.getIdleTimeoutUnit().toMillis(
@@ -166,7 +173,8 @@ public final class IdlingResourceRegistry {
     }
 
     if (!racyResources.isEmpty()) {
-      Message raceBuster = handler.obtainMessage(POSSIBLE_RACE_CONDITION_DETECTED);
+      Message raceBuster = handler.obtainMessage(POSSIBLE_RACE_CONDITION_DETECTED,
+          TIMEOUT_MESSAGE_TAG);
       raceBuster.obj = racyResources;
       handler.sendMessage(raceBuster);
       return null;
@@ -174,6 +182,7 @@ public final class IdlingResourceRegistry {
       return busyResourceNames;
     }
   }
+
 
   private class Dispatcher implements Handler.Callback {
     @Override
@@ -216,12 +225,12 @@ public final class IdlingResourceRegistry {
         // a race detector message has been inserted into the q.
         // reinsert the idle_warning_reached message into the q directly after it
         // so we generate warnings if the system is still sane.
-        handler.sendEmptyMessage(IDLE_WARNING_REACHED);
+        handler.sendMessage(handler.obtainMessage(IDLE_WARNING_REACHED, TIMEOUT_MESSAGE_TAG));
       } else {
         IdlingPolicy warning = IdlingPolicies.getDynamicIdlingResourceWarningPolicy();
         idleNotificationCallback.resourcesStillBusyWarning(busyResources);
         handler.sendMessageDelayed(
-            handler.obtainMessage(IDLE_WARNING_REACHED),
+            handler.obtainMessage(IDLE_WARNING_REACHED, TIMEOUT_MESSAGE_TAG),
             warning.getIdleTimeoutUnit().toMillis(warning.getIdleTimeout()));
       }
     }
@@ -232,7 +241,7 @@ public final class IdlingResourceRegistry {
         // detected a possible race... we've enqueued a race busting message
         // so either that'll resolve the race or kill the app because it's buggy.
         // if the race resolves, we need to timeout properly.
-        handler.sendEmptyMessage(TIMEOUT_OCCURRED);
+        handler.sendMessage(handler.obtainMessage(TIMEOUT_OCCURRED, TIMEOUT_MESSAGE_TAG));
       } else {
         try {
           idleNotificationCallback.resourcesHaveTimedOut(busyResources);
@@ -257,9 +266,7 @@ public final class IdlingResourceRegistry {
     }
 
     private void deregister() {
-      handler.removeMessages(IDLE_WARNING_REACHED);
-      handler.removeMessages(TIMEOUT_OCCURRED);
-      handler.removeMessages(POSSIBLE_RACE_CONDITION_DETECTED);
+      handler.removeCallbacksAndMessages(TIMEOUT_MESSAGE_TAG);
       idleNotificationCallback = NO_OP_CALLBACK;
     }
   }

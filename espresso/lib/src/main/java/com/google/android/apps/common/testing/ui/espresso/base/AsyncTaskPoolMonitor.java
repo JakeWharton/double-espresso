@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * interface, just need a different implementation.
  */
 class AsyncTaskPoolMonitor {
-  private final AtomicReference<Runnable> onIdle = new AtomicReference<Runnable>(null);
+  private final AtomicReference<IdleMonitor> monitor = new AtomicReference<IdleMonitor>(null);
   private final ThreadPoolExecutor pool;
   private final AtomicInteger activeBarrierChecks = new AtomicInteger(0);
 
@@ -38,8 +38,8 @@ class AsyncTaskPoolMonitor {
     } else {
       int activeCount = pool.getActiveCount();
       if (0 != activeCount) {
-        if (onIdle.get() == null) {
-          // if there's no idle runnable scheduled and there are still barrier
+        if (monitor.get() == null) {
+          // if there's no idle monitor scheduled and there are still barrier
           // checks running, they are about to exit, ignore them.
           activeCount = activeCount - activeBarrierChecks.get();
         }
@@ -63,60 +63,103 @@ class AsyncTaskPoolMonitor {
    */
   void notifyWhenIdle(final Runnable idleCallback) {
     checkNotNull(idleCallback);
-    checkState(onIdle.compareAndSet(null, idleCallback), "cannot monitor for idle recursively!");
-    monitorForIdle();
+    IdleMonitor myMonitor = new IdleMonitor(idleCallback);
+    checkState(monitor.compareAndSet(null, myMonitor), "cannot monitor for idle recursively!");
+    myMonitor.monitorForIdle();
   }
 
-  private void monitorForIdle() {
-    if (isIdleNow()) {
-      onIdle.getAndSet(null).run();
-    } else {
-      // Submit N tasks that will block until they are all running on the thread pool.
-      // at this point we can check the pool's queue and verify that there are no new
-      // tasks behind us and deem the queue idle.
+  /**
+   * Stops the idle monitoring mechanism if it is in place.
+   *
+   * Note: the callback may still be invoked after this method is called. The only thing
+   * this method guarantees is that we will stop/cancel any blockign tasks we've placed
+   * on the thread pool.
+   */
+  void cancelIdleMonitor() {
+    IdleMonitor myMonitor = monitor.getAndSet(null);
+    if (null != myMonitor) {
+      myMonitor.poison();
+    }
+  }
 
-      int poolSize = pool.getCorePoolSize();
-      final CyclicBarrier idleBarrier = new CyclicBarrier(poolSize,
+  private class IdleMonitor {
+    private final Runnable onIdle;
+    private final AtomicInteger barrierGeneration = new AtomicInteger(0);
+    private final CyclicBarrier barrier;
+    // written by main, read by all.
+    private volatile boolean poisoned;
+
+    private IdleMonitor(final Runnable onIdle) {
+      this.onIdle = checkNotNull(onIdle);
+      this.barrier = new CyclicBarrier(pool.getCorePoolSize(),
           new Runnable() {
             @Override
             public void run() {
               if (pool.getQueue().isEmpty()) {
                 // no one is behind us, so the queue is idle!
-                onIdle.getAndSet(null).run();
+                monitor.compareAndSet(IdleMonitor.this, null);
+                onIdle.run();
               } else {
                 // work is waiting behind us, enqueue another block of tasks and
                 // hopefully when they're all running, the queue will be empty.
                 monitorForIdle();
               }
+
             }
           });
-      final AtomicInteger barrierGeneration = new AtomicInteger(0);
-      final BarrierRestarter restarter = new BarrierRestarter(idleBarrier, barrierGeneration);
+    }
 
-      for (int i = 0; i < poolSize; i++) {
-        pool.execute(new Runnable() {
-          @Override
-          public void run() {
-            while (true) {
-              activeBarrierChecks.incrementAndGet();
-              int myGeneration = barrierGeneration.get();
-              try {
-                idleBarrier.await();
-                return;
-              } catch (InterruptedException ie) {
-                // sorry - I cant let you interrupt me!
-                restarter.restart(myGeneration);
-              } catch (BrokenBarrierException bbe) {
-                restarter.restart(myGeneration);
-              } finally {
-                activeBarrierChecks.decrementAndGet();
+    /**
+     * Stops this monitor from using the thread pool's resources, it may still cause the
+     * callback to be executed though.
+     */
+    private void poison() {
+      poisoned = true;
+      barrier.reset();
+    }
+
+    private void monitorForIdle() {
+      if (poisoned) {
+        return;
+      }
+
+      if (isIdleNow()) {
+        monitor.compareAndSet(this, null);
+        onIdle.run();
+      } else {
+        // Submit N tasks that will block until they are all running on the thread pool.
+        // at this point we can check the pool's queue and verify that there are no new
+        // tasks behind us and deem the queue idle.
+
+        int poolSize = pool.getCorePoolSize();
+        final BarrierRestarter restarter = new BarrierRestarter(barrier, barrierGeneration);
+
+        for (int i = 0; i < poolSize; i++) {
+          pool.execute(new Runnable() {
+            @Override
+            public void run() {
+              while (!poisoned) {
+                activeBarrierChecks.incrementAndGet();
+                int myGeneration = barrierGeneration.get();
+                try {
+                  barrier.await();
+                  return;
+                } catch (InterruptedException ie) {
+                  // sorry - I cant let you interrupt me!
+                  restarter.restart(myGeneration);
+                } catch (BrokenBarrierException bbe) {
+                  restarter.restart(myGeneration);
+                } finally {
+                  activeBarrierChecks.decrementAndGet();
+                }
               }
             }
-          }
-        });
+          });
+        }
       }
     }
   }
+
 
   private static class BarrierRestarter {
     private final CyclicBarrier barrier;
