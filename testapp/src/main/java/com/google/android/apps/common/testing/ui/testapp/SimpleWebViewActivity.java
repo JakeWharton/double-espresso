@@ -14,8 +14,14 @@ public class SimpleWebViewActivity extends Activity {
     super.onCreate(icicle);
     WebView mainWebView = new WebView(this);
     setContentView(mainWebView);
-    mainWebView.loadData("<html><body>Hello World <b> Enjoy! </b> </body></html>",
-        "text/html", null);
+    mainWebView.loadData(
+        "<html>" +
+        "<script>document.was_clicked = false</script>" +
+        "<body> " +
+        "<button style='height:1000px;width:1000px;' onclick='document.was_clicked = true'> " +
+        "I'm a button</button>" +
+        "</body> " +
+        "</html>", "text/html", null);
     WebSettings settings = mainWebView.getSettings();
     settings.setJavaScriptEnabled(true);
   }

@@ -10,6 +10,7 @@ import com.google.android.apps.common.testing.ui.espresso.IdlingResourceTimeoutE
 import com.google.android.apps.common.testing.ui.espresso.InjectEventSecurityException;
 import com.google.android.apps.common.testing.ui.espresso.UiController;
 import com.google.android.apps.common.testing.ui.espresso.base.IdlingResourceRegistry.IdleNotificationCallback;
+import com.google.android.apps.common.testing.ui.espresso.base.QueueInterrogator.QueueState;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -19,16 +20,12 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.os.MessageQueue;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.BitSet;
 import java.util.EnumSet;
 import java.util.List;
@@ -47,13 +44,9 @@ import javax.inject.Singleton;
 @Singleton
 final class UiControllerImpl implements UiController, Handler.Callback {
 
-  private static final int QUEUE_EMPTY = 0;
-  private static final int QUEUE_TASK_DUE_SOON = 1;
-  private static final int QUEUE_TASK_DUE_LONG = 2;
-  private static final int QUEUE_BARRIER = 3;
+  private static final String TAG = UiControllerImpl.class.getSimpleName();
   private static final int TIMEOUT_IN_SECONDS = 60;
 
-  private static final String TAG = UiControllerImpl.class.getSimpleName();
   private static final Callable<Void> NO_OP = new Callable<Void>() {
     @Override
     public Void call() {
@@ -126,10 +119,9 @@ final class UiControllerImpl implements UiController, Handler.Callback {
   private final Optional<AsyncTaskPoolMonitor> compatTaskMonitor;
   private final IdlingResourceRegistry idlingResourceRegistry;
   private final ExecutorService keyEventExecutor = Executors.newSingleThreadExecutor();
+  private final QueueInterrogator queueInterrogator;
   private final Looper mainLooper;
 
-  private Method messageQueueNextMethod;
-  private Field messageQueueHeadField;
   private Handler controllerHandler;
   // only updated on main thread.
   private boolean looping = false;
@@ -147,6 +139,7 @@ final class UiControllerImpl implements UiController, Handler.Callback {
     this.conditionSet = IdleCondition.createConditionSet();
     this.idlingResourceRegistry = checkNotNull(registry);
     this.mainLooper = checkNotNull(mainLooper);
+    this.queueInterrogator = new QueueInterrogator(mainLooper);
   }
 
   @SuppressWarnings("deprecation")
@@ -370,7 +363,6 @@ final class UiControllerImpl implements UiController, Handler.Callback {
   }
 
   private void loopUntil(EnumSet<IdleCondition> conditions) {
-    MessageQueue mainMessageQueue = Looper.myQueue();
     checkState(!looping, "Recursive looping detected!");
     looping = true;
     try {
@@ -393,8 +385,8 @@ final class UiControllerImpl implements UiController, Handler.Callback {
         }
 
         if (conditionsMet) {
-          int queueState = determineQueueState(mainMessageQueue);
-          if (queueState == QUEUE_EMPTY || queueState == QUEUE_TASK_DUE_LONG) {
+          QueueState queueState = queueInterrogator.determineQueueState();
+          if (queueState == QueueState.EMPTY || queueState == QueueState.TASK_DUE_LONG) {
             return;
           } else {
             Log.v(
@@ -404,7 +396,7 @@ final class UiControllerImpl implements UiController, Handler.Callback {
           }
         }
 
-        Message message = getNextFrom(mainMessageQueue);
+        Message message = queueInterrogator.getNextMessage();
         String callbackString = "unknown";
         String messageString = "unknown";
         try {
@@ -444,70 +436,10 @@ final class UiControllerImpl implements UiController, Handler.Callback {
     }
   }
 
-  private Message getNextFrom(MessageQueue queue) {
-    try {
-      return (Message) messageQueueNextMethod.invoke(queue);
-    } catch (IllegalAccessException e) {
-      throw propagate(e);
-    } catch (IllegalArgumentException e) {
-      throw propagate(e);
-    } catch (InvocationTargetException e) {
-      throw propagate(e);
-    } catch (SecurityException e) {
-      throw propagate(e);
-    }
-  }
-
-  private int determineQueueState(MessageQueue queue) {
-    synchronized (queue) {
-      try {
-        Message head = (Message) messageQueueHeadField.get(queue);
-        if (null == head) {
-          // no messages pending - AT ALL!
-          return QUEUE_EMPTY;
-        }
-        if (null == head.getTarget()) {
-          // null target is a sync barrier token.
-          return QUEUE_BARRIER;
-        } else {
-          long headWhen = head.getWhen();
-          long nowFuz = SystemClock.uptimeMillis() + 15;
-
-          if (nowFuz > headWhen) {
-            return QUEUE_TASK_DUE_SOON;
-          } else {
-            return QUEUE_TASK_DUE_LONG;
-          }
-        }
-      } catch (IllegalAccessException e) {
-        throw propagate(e);
-      }
-    }
-  }
 
   private void initialize() {
-    try {
-      // Lazy initialization.
-      if (messageQueueNextMethod == null) {
-        messageQueueNextMethod = MessageQueue.class.getDeclaredMethod("next");
-        messageQueueNextMethod.setAccessible(true);
-      }
-
-      if (messageQueueHeadField == null) {
-        messageQueueHeadField = MessageQueue.class.getDeclaredField("mMessages");
-        messageQueueHeadField.setAccessible(true);
-      }
-      if (controllerHandler == null) {
-        controllerHandler = new Handler(this);
-      }
-    } catch (IllegalArgumentException e) {
-      propagate(e);
-    } catch (NoSuchFieldException e) {
-      propagate(e);
-    } catch (NoSuchMethodException e) {
-      propagate(e);
-    } catch (SecurityException e) {
-      propagate(e);
+    if (controllerHandler == null) {
+      controllerHandler = new Handler(this);
     }
   }
 

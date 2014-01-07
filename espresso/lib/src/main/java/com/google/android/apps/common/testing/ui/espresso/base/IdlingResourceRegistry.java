@@ -1,5 +1,6 @@
 package com.google.android.apps.common.testing.ui.espresso.base;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
@@ -79,6 +80,12 @@ public final class IdlingResourceRegistry {
       registerToIdleCallback(resource, position);
       idleState.set(position, resource.isIdleNow());
     }
+  }
+
+  public void registerLooper(Looper looper) {
+    checkNotNull(looper);
+    checkArgument(Looper.getMainLooper() != looper, "Not intended for use with main looper!");
+    register(new LooperIdlingResource(looper));
   }
 
   private void registerToIdleCallback(IdlingResource resource, final int position) {

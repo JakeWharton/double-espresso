@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.webkit.WebView;
 
 import org.hamcrest.Matcher;
 
@@ -108,6 +109,12 @@ public final class GeneralClickAction implements ViewAction {
             precision[0], precision[1], tapper, coordinatesProvider, precisionDescriber, loopCount,
             rollbackAction.isPresent())))
         .build();
+    }
+
+    if (tapper == Tap.SINGLE && view instanceof WebView) {
+      // WebViews will not process click events until double tap
+      // timeout. Not the best place for this - but good for now.
+      uiController.loopMainThreadForAtLeast(ViewConfiguration.getDoubleTapTimeout());
     }
   }
 

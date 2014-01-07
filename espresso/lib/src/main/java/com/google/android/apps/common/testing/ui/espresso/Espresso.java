@@ -18,6 +18,7 @@ import com.google.android.apps.common.testing.ui.espresso.util.TreeIterables;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewConfiguration;
 
@@ -58,6 +59,16 @@ public final class Espresso {
    */
   public static DataInteraction onData(Matcher<Object> dataMatcher) {
     return new DataInteraction(dataMatcher);
+  }
+
+  /**
+   * Registers a Looper for idle checking with the framework. This is intended for use with
+   * non-UI thread loopers.
+   *
+   * @throws IllegalArgumentException if looper is the main looper.
+   */
+  public static void registerLooperAsIdlingResource(Looper looper) {
+    espressoGraph().get(IdlingResourceRegistry.class).registerLooper(looper);
   }
 
   /**
