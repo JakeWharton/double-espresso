@@ -83,7 +83,9 @@ public final class KeyEventAction implements ViewAction {
           new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_UP, this.key.getKeyCode(), 0));
     }
 
+
     if (this.key.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+      controller.loopMainThreadUntilIdle();
       boolean activeActivities = !ActivityLifecycleMonitorRegistry.getInstance()
           .getActivitiesInStage(Stage.RESUMED)
           .isEmpty();
