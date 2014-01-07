@@ -4,9 +4,9 @@
   <parent>
     <groupId>com.google.android.apps.common.testing</groupId>
     <artifactId>espresso-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${com.google.android.apps.common.testing.version}</version>
   </parent>
-  <artifactId>espresso-contrib-test</artifactId>
+  <artifactId>espresso-contrib-tests</artifactId>
   <packaging>apk</packaging>
   <name>Tests for the Espresso Contrib Library</name>
   <dependencies>

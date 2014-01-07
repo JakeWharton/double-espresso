@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.google.android.apps.common.testing</groupId>
     <artifactId>TestKit</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${com.google.android.apps.common.testing.version}</version>
   </parent>
   <artifactId>testapp</artifactId>
   <packaging>apk</packaging>
