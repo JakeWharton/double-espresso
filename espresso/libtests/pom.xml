@@ -39,6 +39,12 @@
       <groupId>com.google.android.apps.common.testing</groupId>
       <artifactId>espresso</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.android</groupId>
@@ -52,11 +58,6 @@
     <dependency>
       <groupId>com.google.dexmaker</groupId>
       <artifactId>dexmaker</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.android.apps.common.testing</groupId>
-      <artifactId>testrunner-runtime</artifactId>
-      <version>${project.version}</version>
     </dependency>
   </dependencies>
   <build>

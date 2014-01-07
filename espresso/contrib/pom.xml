@@ -16,30 +16,14 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.android</groupId>
-      <artifactId>android-test</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>android.support</groupId>
       <artifactId>compatibility-v4</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.android.apps.common.testing</groupId>
       <artifactId>espresso</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
     </dependency>
   </dependencies>
   <build>
