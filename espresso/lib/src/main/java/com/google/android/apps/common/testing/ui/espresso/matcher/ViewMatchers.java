@@ -534,7 +534,7 @@ public final class ViewMatchers {
     return new TypeSafeMatcher<View>() {
       @Override
       public void describeTo(Description description) {
-        description.appendText("is descenant of a: ");
+        description.appendText("is descendant of a: ");
         ancestorMatcher.describeTo(description);
       }
 
