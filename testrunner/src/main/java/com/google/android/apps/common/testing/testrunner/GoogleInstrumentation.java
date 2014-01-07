@@ -72,6 +72,7 @@ extends ExposedInstrumentationApi {
   private Thread mainThread;
   private AtomicLong lastIdleTime = new AtomicLong(0);
   private AtomicInteger startedActivityCounter = new AtomicInteger(0);
+
   private IdleHandler idleHandler = new IdleHandler() {
     @Override
     public boolean queueIdle() {
@@ -102,7 +103,6 @@ extends ExposedInstrumentationApi {
     Looper.myQueue().addIdleHandler(idleHandler);
     super.onCreate(arguments);
   }
-
 
   protected final void specifyDexMakerCacheProperty() {
     // DexMaker uses heuristics to figure out where to store its temporary dex files
@@ -212,7 +212,7 @@ extends ExposedInstrumentationApi {
    *
    * We give the app 2 seconds to stop all its activities, then we proceed.
    */
-  private void waitForActivitiesToComplete() {
+  protected void waitForActivitiesToComplete() {
     long endTime = System.currentTimeMillis() + MILLIS_TO_WAIT_FOR_ACTIVITY_TO_STOP;
     int currentActivityCount = startedActivityCounter.get();
 
@@ -468,7 +468,11 @@ return GoogleInstrumentation.super.startActivitySync(intent);
   }
 
 
-  class ActivityFinisher implements Runnable {
+  /**
+   * Loops through all the activities that have not yet finished and explicitly calls finish
+   * on them.
+   */
+  public class ActivityFinisher implements Runnable {
     @Override
     public void run() {
       List<Activity> activities = new ArrayList<Activity>();
