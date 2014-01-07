@@ -38,10 +38,11 @@ public final class RootMatchers {
       allOf(
         hasWindowLayoutParams(),
         allOf(
-              anyOf(
+             anyOf(
                   allOf(isDialog(), withDecorView(hasWindowFocus())),
                   isSubwindowOfCurrentActivity()),
-              anyOf(isFocusable(), isTouchable())));
+             isFocusable()));
+
 
   /**
    * Matches {@link Root}s that can take window focus.
@@ -57,7 +58,7 @@ public final class RootMatchers {
       @Override
       public boolean matchesSafely(Root root) {
         int flags = root.getWindowLayoutParams().get().flags;
-        boolean r = !((flags & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) == 1);
+        boolean r = !((flags & WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) != 0);
         return r;
       }
     };
@@ -77,7 +78,7 @@ public final class RootMatchers {
       @Override
       public boolean matchesSafely(Root root) {
         int flags = root.getWindowLayoutParams().get().flags;
-        boolean r = !((flags & WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE) == 1);
+        boolean r = !((flags & WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE) != 0);
         return r;
       }
     };
