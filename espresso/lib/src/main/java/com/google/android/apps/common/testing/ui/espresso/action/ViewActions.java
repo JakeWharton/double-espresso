@@ -34,7 +34,7 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction click() {
-    return new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.PINPOINT);
+    return new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.FINGER);
   }
 
   /**
@@ -58,7 +58,7 @@ public final class ViewActions {
    */
   public static ViewAction click(ViewAction rollbackAction) {
     checkNotNull(rollbackAction);
-    return new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.PINPOINT,
+    return new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.FINGER,
         rollbackAction);
   }
 
@@ -114,7 +114,7 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction doubleClick() {
-    return new GeneralClickAction(Tap.DOUBLE, GeneralLocation.CENTER, Press.PINPOINT);
+    return new GeneralClickAction(Tap.DOUBLE, GeneralLocation.CENTER, Press.FINGER);
   }
 
   /**
@@ -127,7 +127,7 @@ public final class ViewActions {
    * <ul>
    */
   public static ViewAction longClick() {
-    return new GeneralClickAction(Tap.LONG, GeneralLocation.CENTER, Press.PINPOINT);
+    return new GeneralClickAction(Tap.LONG, GeneralLocation.CENTER, Press.FINGER);
   }
 
   /**

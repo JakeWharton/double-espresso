@@ -60,7 +60,7 @@ public final class TypeTextAction implements ViewAction {
     }
 
     // Perform a click.
-    new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.PINPOINT)
+    new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.FINGER)
         .perform(uiController, view);
     uiController.loopMainThreadUntilIdle();
 
