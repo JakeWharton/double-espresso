@@ -101,8 +101,13 @@ final class MotionEvents {
   }
 
   static boolean sendUp(UiController uiController, MotionEvent downEvent) {
+    return sendUp(uiController, downEvent, new float[] { downEvent.getX(), downEvent.getY() });
+  }
+
+  static boolean sendUp(UiController uiController, MotionEvent downEvent, float[] coordinates) {
     checkNotNull(uiController);
     checkNotNull(downEvent);
+    checkNotNull(coordinates);
 
     MotionEvent motionEvent = null;
     try {
@@ -110,13 +115,13 @@ final class MotionEvents {
       motionEvent = MotionEvent.obtain(downEvent.getDownTime(),
           SystemClock.uptimeMillis(),
           MotionEvent.ACTION_UP,
-          downEvent.getX(),
-          downEvent.getY(),
+          coordinates[0],
+          coordinates[1],
           0);
       boolean injectEventSucceeded = uiController.injectMotionEvent(motionEvent);
 
       if (!injectEventSucceeded) {
-        Log.d(TAG, String.format(
+        Log.e(TAG, String.format(
             "Injection of up event failed (corresponding down event: %s)", downEvent.toString()));
         return false;
       }
@@ -171,6 +176,45 @@ final class MotionEvents {
         motionEvent = null;
       }
     }
+  }
+
+  static boolean sendMovement(UiController uiController, MotionEvent downEvent,
+      float[] coordinates) {
+    checkNotNull(uiController);
+    checkNotNull(downEvent);
+    checkNotNull(coordinates);
+
+    MotionEvent motionEvent = null;
+    try {
+      motionEvent = MotionEvent.obtain(downEvent.getDownTime(),
+          SystemClock.uptimeMillis(),
+          MotionEvent.ACTION_MOVE,
+          coordinates[0],
+          coordinates[1],
+          0);
+      boolean injectEventSucceeded = uiController.injectMotionEvent(motionEvent);
+
+      if (!injectEventSucceeded) {
+        Log.e(TAG, String.format(
+            "Injection of motion event failed (corresponding down event: %s)",
+            downEvent.toString()));
+        return false;
+      }
+    } catch (InjectEventSecurityException e) {
+      throw new PerformException.Builder()
+        .withActionDescription(String.format(
+          "inject motion event (corresponding down event: %s)", downEvent.toString()))
+        .withViewDescription("unknown") // likely to be replaced by FailureHandler
+        .withCause(e)
+        .build();
+    } finally {
+      if (null != motionEvent) {
+        motionEvent.recycle();
+        motionEvent = null;
+      }
+    }
+
+    return true;
   }
 
   /**

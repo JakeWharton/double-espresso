@@ -29,7 +29,7 @@ public interface Tapper {
   /**
    * Sends a MotionEvent to the given UiController.
    *
-   * @param uiController a UiController to which the MotionEvents are sent.
+   * @param uiController a UiController to use to send MotionEvents to the screen.
    * @param coordinates a float[] with x and y values of center of the tap.
    * @param precision  a float[] with x and y values of precision of the tap.
    * @return The status of the tap.

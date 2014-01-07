@@ -63,6 +63,34 @@ public final class ViewActions {
   }
 
   /**
+   * Returns an action that performs a swipe right-to-left across the vertical center of the
+   * view.<br>
+   * <br>
+   * View constraints:
+   * <ul>
+   * <li>must be displayed on screen
+   * <ul>
+   */
+  public static ViewAction swipeLeft() {
+    return new GeneralSwipeAction(Swipe.FAST, GeneralLocation.CENTER_RIGHT,
+        GeneralLocation.CENTER_LEFT, Press.FINGER);
+  }
+
+  /**
+   * Returns an action that performs a swipe left-to-right across the vertical center of the
+   * view.<br>
+   * <br>
+   * View constraints:
+   * <ul>
+   * <li>must be displayed on screen
+   * <ul>
+   */
+  public static ViewAction swipeRight() {
+    return new GeneralSwipeAction(Swipe.FAST, GeneralLocation.CENTER_LEFT,
+        GeneralLocation.CENTER_RIGHT, Press.FINGER);
+  }
+
+  /**
    * Returns an action that closes soft keyboard. If the keyboard is already closed, it is a no-op.
    */
   public static ViewAction closeSoftKeyboard() {
