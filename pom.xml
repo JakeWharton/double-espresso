@@ -8,6 +8,7 @@
   <modules>
     <module>espresso</module>
     <module>testapp</module>
+    <module>testapp_test</module>
     <module>testrunner</module>
     <module>testrunner-runtime</module>
   </modules>
