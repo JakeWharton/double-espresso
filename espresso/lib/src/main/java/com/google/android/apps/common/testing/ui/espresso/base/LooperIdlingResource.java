@@ -18,12 +18,16 @@ final class LooperIdlingResource implements IdlingResource {
 
   private static final String TAG = "LooperIdleResource";
 
+  private final boolean considerWaitIdle;
   private final Looper monitoredLooper;
   private final Handler monitoredHandler;
 
-  LooperIdlingResource(Looper monitoredLooper) {
+  private ResourceCallback resourceCallback;
+
+  LooperIdlingResource(Looper monitoredLooper, boolean considerWaitIdle) {
     this.monitoredLooper = checkNotNull(monitoredLooper);
     this.monitoredHandler = new Handler(monitoredLooper);
+    this.considerWaitIdle = considerWaitIdle;
     checkState(Looper.getMainLooper() != monitoredLooper, "Not for use with main looper.");
   }
 
@@ -39,11 +43,20 @@ final class LooperIdlingResource implements IdlingResource {
   public boolean isIdleNow() {
     // on main thread here.
     QueueState state = queueInterrogator.determineQueueState();
-    return state == QueueState.EMPTY || state == QueueState.TASK_DUE_LONG;
+    boolean idle = state == QueueState.EMPTY || state == QueueState.TASK_DUE_LONG;
+    boolean idleWait = considerWaitIdle
+        && monitoredLooper.getThread().getState() == Thread.State.WAITING;
+    if (idleWait) {
+      if (resourceCallback != null) {
+        resourceCallback.onTransitionToIdle();
+      }
+    }
+    return idle || idleWait;
   }
 
   @Override
   public void registerIdleTransitionCallback(ResourceCallback resourceCallback) {
+    this.resourceCallback = resourceCallback;
     // on main thread here.
     queueInterrogator = new QueueInterrogator(monitoredLooper);
 

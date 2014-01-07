@@ -68,7 +68,22 @@ public final class Espresso {
    * @throws IllegalArgumentException if looper is the main looper.
    */
   public static void registerLooperAsIdlingResource(Looper looper) {
-    espressoGraph().get(IdlingResourceRegistry.class).registerLooper(looper);
+    registerLooperAsIdlingResource(looper, false);
+  }
+
+  /**
+   * Registers a Looper for idle checking with the framework. This is intended for use with
+   * non-UI thread loopers.
+   *
+   * This method allows the caller to consider Thread.State.WAIT to be 'idle'.
+   *
+   * This is useful in the case where a looper is sending a message to the UI thread synchronously
+   * through a wait/notify mechanism.
+   *
+   * @throws IllegalArgumentException if looper is the main looper.
+   */
+  public static void registerLooperAsIdlingResource(Looper looper, boolean considerWaitIdle) {
+    espressoGraph().get(IdlingResourceRegistry.class).registerLooper(looper, considerWaitIdle);
   }
 
   /**

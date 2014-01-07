@@ -82,10 +82,10 @@ public final class IdlingResourceRegistry {
     }
   }
 
-  public void registerLooper(Looper looper) {
+  public void registerLooper(Looper looper, boolean considerWaitIdle) {
     checkNotNull(looper);
     checkArgument(Looper.getMainLooper() != looper, "Not intended for use with main looper!");
-    register(new LooperIdlingResource(looper));
+    register(new LooperIdlingResource(looper, considerWaitIdle));
   }
 
   private void registerToIdleCallback(IdlingResource resource, final int position) {
