@@ -3,7 +3,6 @@
 package com.google.android.apps.common.testing.testrunner;
 
 import com.google.android.apps.common.testing.intento.IntentSpy;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;

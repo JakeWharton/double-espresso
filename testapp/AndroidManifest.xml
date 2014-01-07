@@ -22,6 +22,7 @@
         <activity android:name="MenuActivity" android:label="menu activity"/>
         <activity android:name="FragmentStack" android:label="fragment stack activity"/>
         <activity android:name="SyncActivity" android:label="sync activity"/>
+        <activity android:name="SimpleWebViewActivity" android:label="web view"/>
     </application>
 
     <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
