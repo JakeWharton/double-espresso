@@ -115,7 +115,13 @@ public enum Tap implements Tapper {
             MotionEvent.ACTION_DOWN,
             coordinates[0],
             coordinates[1],
-            0);
+            0, // pressure
+            1, // size
+            0, // metaState
+            precision[0], // xPrecision
+            precision[1], // yPrecision
+            0,  // deviceId
+            0); // edgeFlags
         // The down event should be considered a tap if it is long enough to be detected
         // but short enough not to be a long-press. Assume that TapTimeout is set at least
         // twice the detection time for a tap (no need to sleep for the whole TapTimeout since
