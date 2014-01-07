@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.hasValue;
 import static org.hamcrest.Matchers.instanceOf;
 
 import com.google.android.apps.common.testing.testrunner.annotations.SdkSuppress;
-import com.google.android.apps.common.testing.ui.espresso.PerformException;
+import com.google.android.apps.common.testing.ui.espresso.NoActivityResumedException;
 import com.google.android.apps.common.testing.ui.testapp.MainActivity;
 import com.google.android.apps.common.testing.ui.testapp.R;
 
@@ -51,8 +51,8 @@ public class KeyEventActionIntegrationTest extends ActivityInstrumentationTestCa
     getActivity();
     try {
       pressBack();
-      fail("Should have thrown PerformException");
-    } catch (PerformException expected) {
+      fail("Should have thrown NoActivityResumedException");
+    } catch (NoActivityResumedException expected) {
     }
   }
 
@@ -88,8 +88,8 @@ public class KeyEventActionIntegrationTest extends ActivityInstrumentationTestCa
         .check(matches(withText(containsString("#1"))));
     try {
       pressBack();
-      fail("Should have thrown PerformException");
-    } catch (PerformException expected) {
+      fail("Should have thrown NoActivityResumedException");
+    } catch (NoActivityResumedException expected) {
     }
     getInstrumentation().startActivitySync(fragmentStack);
 
@@ -115,8 +115,8 @@ public class KeyEventActionIntegrationTest extends ActivityInstrumentationTestCa
 
     try {
       pressBack();
-      fail("Should have thrown PerformException");
-    } catch (PerformException expected) {
+      fail("Should have thrown NoActivityResumedException");
+    } catch (NoActivityResumedException expected) {
     }
   }
 
