@@ -8,6 +8,8 @@ import com.google.android.apps.common.testing.ui.espresso.AmbiguousViewMatcherEx
 import com.google.android.apps.common.testing.ui.espresso.NoMatchingViewException;
 import com.google.android.apps.common.testing.ui.espresso.ViewFinder;
 import com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers;
+import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
@@ -57,8 +59,13 @@ public final class ViewFinderImpl implements ViewFinder {
     while (matchedViewIterator.hasNext()) {
       if (matchedView != null) {
         // Ambiguous!
-        throw AmbiguousViewMatcherException.create(viewMatcher, root, matchedView,
-            matchedViewIterator.next(), Iterators.toArray(matchedViewIterator, View.class));
+        throw new AmbiguousViewMatcherException.Builder()
+            .withViewMatcher(viewMatcher)
+            .withRootView(root)
+            .withView1(matchedView)
+            .withView2(matchedViewIterator.next())
+            .withOtherAmbiguousViews(Iterators.toArray(matchedViewIterator, View.class))
+            .build();
       } else {
         matchedView = matchedViewIterator.next();
       }
@@ -69,9 +76,21 @@ public final class ViewFinderImpl implements ViewFinder {
       List<View> adapterViews = Lists.newArrayList(
           Iterables.filter(breadthFirstViewTraversal(root), adapterViewPredicate).iterator());
       if (adapterViews.isEmpty()) {
-        throw NoMatchingViewException.create(viewMatcher, root);
+        throw new NoMatchingViewException.Builder()
+            .withViewMatcher(viewMatcher)
+            .withRootView(root)
+            .build();
       }
-      throw NoMatchingViewException.create(viewMatcher, root, adapterViews);
+
+      String warning = String.format("\nIf the target view is not part of the view hierarchy, you "
+        + "may need to use Espresso.onData to load it from one of the following AdapterViews:%s"
+        , Joiner.on("\n- ").join(adapterViews));
+      throw new NoMatchingViewException.Builder()
+          .withViewMatcher(viewMatcher)
+          .withRootView(root)
+          .withAdapterViews(adapterViews)
+          .withAdapterViewWarning(Optional.of(warning))
+          .build();
     } else {
       return matchedView;
     }

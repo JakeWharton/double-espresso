@@ -3,8 +3,8 @@ package com.google.android.apps.common.testing.ui.espresso;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.android.apps.common.testing.ui.espresso.util.HumanReadables;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import android.view.View;
 
@@ -29,55 +29,92 @@ import java.util.List;
  */
 public final class NoMatchingViewException extends RuntimeException implements EspressoException {
 
+  private Matcher<? super View> viewMatcher;
+  private View rootView;
+  private List<View> adapterViews = Lists.newArrayList();
+  private boolean includeViewHierarchy = true;
+  private Optional<String> adapterViewWarning = Optional.<String>absent();
+
   private NoMatchingViewException(String description) {
     super(description);
   }
 
-  /**
-   * Creates a new {@link NoMatchingViewException} suitable for erroring out a test case.
-   *
-   * This should be called only on the UI Thread since it will create a dump of the view hierarchy
-   * into the exception description.
-   *
-   * @param viewMatcher the matcher used to traverse the view.
-   * @param rootView the root of the view hierarchy.
-   * @return a NoMatchingViewException suitable to be thrown on the instrumentation thread.
-   */
-  public static NoMatchingViewException create(
-      Matcher<? super View> viewMatcher, final View rootView) {
-    return create(Optional.<String>absent(), viewMatcher, rootView);
+  private NoMatchingViewException(Builder builder) {
+    super(getErrorMessage(builder));
+    this.viewMatcher = builder.viewMatcher;
+    this.rootView = builder.rootView;
+    this.adapterViews = builder.adapterViews;
+    this.adapterViewWarning = builder.adapterViewWarning;
+    this.includeViewHierarchy = builder.includeViewHierarchy;
   }
 
-  /**
-   * Same as {@link #create(Matcher, View)}, but with additional logging about AdapterViews.
-   */
-  public static NoMatchingViewException create(
-      Matcher<? super View> viewMatcher, final View rootView, final List<View> adapterViews) {
-    checkNotNull(adapterViews);
-    if (adapterViews.isEmpty()) {
-      return create(viewMatcher, rootView);
+  private static String getErrorMessage(Builder builder) {
+    String errorMessage = "";
+    if (builder.includeViewHierarchy) {
+      Optional<List<View>> problemViews = Optional.absent();
+      Optional<String> problemViewSuffix = Optional.absent();
+      String message = String.format("No views in hierarchy found matching: %s",
+          builder.viewMatcher);
+      if (builder.adapterViewWarning.isPresent()) {
+        message = message + builder.adapterViewWarning.get();
+      }
+      errorMessage = HumanReadables.getViewHierarchyErrorMessage(builder.rootView, problemViews,
+          message, problemViewSuffix);
+    } else {
+      errorMessage = String.format("Could not find a view that matches %s" , builder.viewMatcher);
     }
-    String warning = String.format("\nIf the target view is not part of the view hierarchy, you "
-        + "may need to use Espresso.onData to load it from one of the following AdapterViews:%s"
-        , Joiner.on("\n- ").join(adapterViews));
-    return create(Optional.of(warning), viewMatcher, rootView);
+    return errorMessage;
   }
 
-  private static NoMatchingViewException create(
-      Optional<String> adapterViewWarning, Matcher<? super View> viewMatcher, final View rootView) {
-    checkNotNull(viewMatcher);
-    checkNotNull(rootView);
-    Optional<List<View>> problemViews = Optional.absent();
-    Optional<String> problemViewSuffix = Optional.absent();
-    // TODO(user): move printing out of the view hierarchy into the DefaultFailureHandler so that
-    // the verbose output can be overridden by projects that don't need it (e.g. Corretto).
-    String message = String.format("No views in hierarchy found matching: %s", viewMatcher);
-    if (adapterViewWarning.isPresent()) {
-      message = message + adapterViewWarning.get();
-    }
-    String errorMessage = HumanReadables.getViewHierarchyErrorMessage(rootView, problemViews,
-        message, problemViewSuffix);
+  /** Builder for {@link NoMatchingViewException}. */
+  public static class Builder {
 
-    return new NoMatchingViewException(errorMessage);
+    private Matcher<? super View> viewMatcher;
+    private View rootView;
+    private List<View> adapterViews = Lists.newArrayList();
+    private boolean includeViewHierarchy = true;
+    private Optional<String> adapterViewWarning = Optional.<String>absent();
+
+    public Builder from(NoMatchingViewException exception) {
+      this.viewMatcher = exception.viewMatcher;
+      this.rootView = exception.rootView;
+      this.adapterViews = exception.adapterViews;
+      this.adapterViewWarning = exception.adapterViewWarning;
+      this.includeViewHierarchy = exception.includeViewHierarchy;
+      return this;
+    }
+
+    public Builder withViewMatcher(Matcher<? super View> viewMatcher) {
+      this.viewMatcher = viewMatcher;
+      return this;
+    }
+
+    public Builder withRootView(View rootView) {
+      this.rootView = rootView;
+      return this;
+    }
+
+    public Builder withAdapterViews(List<View> adapterViews) {
+      this.adapterViews = adapterViews;
+      return this;
+    }
+
+    public Builder includeViewHierarchy(boolean includeViewHierarchy) {
+      this.includeViewHierarchy = includeViewHierarchy;
+      return this;
+    }
+
+    public Builder withAdapterViewWarning(Optional<String> adapterViewWarning) {
+      this.adapterViewWarning = adapterViewWarning;
+      return this;
+    }
+
+    public NoMatchingViewException build() {
+      checkNotNull(viewMatcher);
+      checkNotNull(rootView);
+      checkNotNull(adapterViews);
+      checkNotNull(adapterViewWarning);
+      return new NoMatchingViewException(this);
+    }
   }
 }

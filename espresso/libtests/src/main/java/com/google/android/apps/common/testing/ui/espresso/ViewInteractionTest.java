@@ -155,8 +155,11 @@ public class ViewInteractionTest extends AndroidTestCase {
   }
 
   public void testCheck_ViewCannotBeFound() {
-    NoMatchingViewException noViewException =
-        NoMatchingViewException.create(viewMatcher, rootView);
+    NoMatchingViewException noViewException = new NoMatchingViewException.Builder()
+        .withViewMatcher(viewMatcher)
+        .withRootView(rootView)
+        .build();
+
     when(mockViewFinder.getView()).thenThrow(noViewException);
     initInteraction();
     testInteraction.check(mockAssertion);

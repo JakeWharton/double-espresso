@@ -62,7 +62,13 @@ public class AmbiguousViewMatcherExceptionTest extends AndroidTestCase {
   }
 
   private AmbiguousViewMatcherException createException() {
-    return AmbiguousViewMatcherException.create(alwaysTrueMatcher, testView,
-        testView, child1, child2, child3, child4);
+
+    return new AmbiguousViewMatcherException.Builder()
+        .withViewMatcher(alwaysTrueMatcher)
+        .withRootView(testView)
+        .withView1(testView)
+        .withView2(child1)
+        .withOtherAmbiguousViews(child2, child3, child4)
+        .build();
   }
 }

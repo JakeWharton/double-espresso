@@ -40,6 +40,9 @@ public class NoMatchingViewExceptionTest extends AndroidTestCase {
   }
 
   private NoMatchingViewException createException() {
-    return NoMatchingViewException.create(alwaysFailingMatcher, testView);
+    return new NoMatchingViewException.Builder()
+        .withViewMatcher(alwaysFailingMatcher)
+        .withRootView(testView)
+        .build();
   }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * An exception which indicates that a Matcher<View> matched multiple views in the hierarchy when
- * only one view was expected.
+ * only one view was expected. It should be called only from the main thread.
  * <p>
  * Contains details about the matcher and the current view hierarchy to aid in debugging.
  * </p>
@@ -32,39 +32,97 @@ import java.util.List;
 public final class AmbiguousViewMatcherException extends RuntimeException
     implements EspressoException {
 
+  private Matcher<? super View> viewMatcher;
+  private View rootView;
+  private View view1;
+  private View view2;
+  private View[] others;
+  private boolean includeViewHierarchy;
+
   private AmbiguousViewMatcherException(String description) {
     super(description);
   }
 
-  /**
-   * Creates a new AmbiguousViewMatcherException suitable for erroring out a test case.
-   *
-   *  This should be called only on the UI Thread since it will create a dump of the view hierarchy
-   * into the exception description.
-   *
-   * @param viewMatcher the matcher used to traverse the view.
-   * @param rootView the root of the view hierarchy.
-   * @param view1 the first ambiguous view
-   * @param view2 the second ambiguous view
-   * @param others any other ambiguous views
-   * @return a AmbiguousViewMatcherException suitable to be thrown on the instrumentation thread.
-   */
-  public static AmbiguousViewMatcherException create(Matcher<? super View> viewMatcher,
-      final View rootView, final View view1, final View view2, final View... others) {
-    checkNotNull(viewMatcher);
-    checkNotNull(rootView);
-    checkNotNull(view1);
-    checkNotNull(view2);
-    checkNotNull(others);
+  private AmbiguousViewMatcherException(Builder builder) {
+    super(getErrorMessage(builder));
+    this.viewMatcher = builder.viewMatcher;
+    this.rootView = builder.rootView;
+    this.view1 = builder.view1;
+    this.view2 = builder.view2;
+    this.others = builder.others;
+  }
 
-    final ImmutableSet<View> ambiguousViews =
-        ImmutableSet.<View>builder().add(view1, view2).add(others).build();
+  private static String getErrorMessage(Builder builder) {
+    String errorMessage = "";
+    if (builder.includeViewHierarchy) {
+      ImmutableSet<View> ambiguousViews =
+        ImmutableSet.<View>builder().add(builder.view1, builder.view2).add(builder.others).build();
+      errorMessage = HumanReadables.getViewHierarchyErrorMessage(builder.rootView,
+          Optional.of((List<View>) new ArrayList<View>(ambiguousViews)),
+          String.format("'%s' matches multiple views in the hierarchy.", builder.viewMatcher),
+          Optional.of("****MATCHES****"));
+    } else {
+      errorMessage = String.format("Multiple Ambiguous Views found for matcher %s",
+          builder.viewMatcher);
+    }
+    return errorMessage;
+  }
 
-    String errorMessage = HumanReadables.getViewHierarchyErrorMessage(rootView,
-        Optional.of((List<View>) new ArrayList<View>(ambiguousViews)),
-        String.format("'%s' matches multiple views in the hierarchy.", viewMatcher),
-        Optional.of("****MATCHES****"));
+  /** Builder for {@link AmbiguousViewMatcherException}. */
+  public static class Builder {
+    private Matcher<? super View> viewMatcher;
+    private View rootView;
+    private View view1;
+    private View view2;
+    private View[] others;
+    private boolean includeViewHierarchy = true;
 
-    return new AmbiguousViewMatcherException(errorMessage);
+    public Builder from(AmbiguousViewMatcherException exception) {
+      this.viewMatcher = exception.viewMatcher;
+      this.rootView = exception.rootView;
+      this.view1 = exception.view1;
+      this.view2 = exception.view2;
+      this.others = exception.others;
+      return this;
+    }
+
+    public Builder withViewMatcher(Matcher<? super View> viewMatcher) {
+      this.viewMatcher = viewMatcher;
+      return this;
+    }
+
+    public Builder withRootView(View rootView) {
+      this.rootView = rootView;
+      return this;
+    }
+
+    public Builder withView1(View view1) {
+      this.view1 = view1;
+      return this;
+    }
+
+    public Builder withView2(View view2) {
+      this.view2 = view2;
+      return this;
+    }
+
+    public Builder withOtherAmbiguousViews(View... others) {
+      this.others = others;
+      return this;
+    }
+
+    public Builder includeViewHierarchy(boolean includeViewHierarchy) {
+      this.includeViewHierarchy = includeViewHierarchy;
+      return this;
+    }
+
+    public AmbiguousViewMatcherException build() {
+      checkNotNull(viewMatcher);
+      checkNotNull(rootView);
+      checkNotNull(view1);
+      checkNotNull(view2);
+      checkNotNull(others);
+      return new AmbiguousViewMatcherException(this);
+    }
   }
 }

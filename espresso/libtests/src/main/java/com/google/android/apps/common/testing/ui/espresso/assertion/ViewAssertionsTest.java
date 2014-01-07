@@ -46,8 +46,10 @@ public class ViewAssertionsTest extends InstrumentationTestCase {
     alwaysFails = not(is(presentView.get()));
     nullViewMatcher = nullValue();
 
-    presentException = Optional.of(NoMatchingViewException.create(
-        alwaysFails, new View(getInstrumentation().getTargetContext())));
+    presentException = Optional.of(new NoMatchingViewException.Builder()
+        .withViewMatcher(alwaysFails)
+        .withRootView(new View(getInstrumentation().getTargetContext()))
+        .build());
   }
 
   public void testViewPresent_MatcherFail() {
