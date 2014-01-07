@@ -120,6 +120,13 @@ GoogleInstrumentation
     return bridgeTestRunner.getTestSuite();
   }
 
+  /**
+   * Provides access to the underlying AndroidTestRunner.
+   */
+  public AndroidTestRunner getAndroidTestRunner() {
+    return bridgeTestRunner.getAndroidTestRunner();
+  }
+
   @Override
   public void start() {
     List<TestCase> testCases = bridgeTestRunner.getAndroidTestRunner().getTestCases();
