@@ -15,7 +15,7 @@
         <activity android:name="SimpleActivity" android:label="simple activity"/>
         <activity android:name="SendActivity" android:label="send activity"/>
         <activity android:name="DisplayActivity" android:label="display activity"/>
-        <activity android:name="DrawerActivity" android:label="drawer activity"/>
+        <activity android:name="DrawerActivity" android:label="drawer activity" android:theme="@style/Theme.AppCompat.Light"/>
         <activity android:name="GestureActivity" android:label="gesture activity" android:exported="true"/>
         <activity android:name="ScrollActivity" android:label="scroll activity" android:exported="true"/>
         <activity android:name="LongListActivity" android:label="list activity" android:exported="true"/>
