@@ -17,7 +17,6 @@ import android.util.Log;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
@@ -338,13 +337,8 @@ return GoogleInstrumentation.super.startActivitySync(intent);
     // in this case we are not expecting any result so selecting
     // a value < 0.
     int requestCode = -1;
-    List<Intent> intentList = Arrays.asList();
-    for (Intent intent : intents) {
-      intentList.add(intent);
-    }
-    for (int idx = intentList.size() - 1; idx >= 0; idx--){
-        execStartActivity(
-            who, contextThread, token, target, intentList.get(idx), requestCode, options);
+    for (int idx = intents.length - 1; idx >= 0; idx--) {
+      execStartActivity(who, contextThread, token, target, intents[idx], requestCode, options);
     }
   }
 
