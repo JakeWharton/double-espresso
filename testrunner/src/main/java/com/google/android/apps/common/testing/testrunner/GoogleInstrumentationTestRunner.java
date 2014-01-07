@@ -1,9 +1,15 @@
 package com.google.android.apps.common.testing.testrunner;
 
+import android.app.Activity;
+import android.app.Application;
 import android.app.Instrumentation;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.test.AndroidTestRunner;
 import android.test.InstrumentationTestRunner;
 import android.test.TestSuiteProvider;
@@ -42,6 +48,45 @@ GoogleInstrumentation
       Log.w(LOG_TAG, "Failed to send analytics.", re);
     }
     super.finish(resultCode, results);
+  }
+
+  // ActivityUnitTestCase defaults to building the ComponentName via
+  // Activity.getClass().getPackage().getName(). This will cause a problem if the Java Package of
+  // the Activity is not the Android Package of the application, specifically
+  // Activity.getPackageName() will return an incorrect value. For example, android compatibility
+  // lib rev 19 is broken by this behaviour because it will eventually call through to
+  // PackageManager with Activity.getComponentName().getPackageName() and which PM will know nothing
+  // about.
+  @Override
+  public Activity newActivity(Class<?> clazz,
+      Context context,
+      IBinder token,
+      Application application,
+      Intent intent,
+      ActivityInfo info,
+      CharSequence title,
+      Activity parent,
+      String id,
+      Object lastNonConfigurationInstance) throws InstantiationException, IllegalAccessException {
+    String activityClassPackageName = clazz.getPackage().getName();
+    String contextPackageName = context.getPackageName();
+    ComponentName intentComponentName = intent.getComponent();
+    if (!contextPackageName.equals(intentComponentName.getPackageName())) {
+      if (activityClassPackageName.equals(intentComponentName.getPackageName())) {
+        intent.setComponent(
+            new ComponentName(contextPackageName, intentComponentName.getClassName()));
+      }
+    }
+    return super.newActivity(clazz,
+        context,
+        token,
+        application,
+        intent,
+        info,
+        title,
+        parent,
+        id,
+        lastNonConfigurationInstance);
   }
 
   @Override
