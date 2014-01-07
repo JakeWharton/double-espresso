@@ -6,6 +6,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitor;
 import com.google.android.apps.common.testing.testrunner.Stage;
+import com.google.android.apps.common.testing.ui.espresso.NoActivityResumedException;
 import com.google.android.apps.common.testing.ui.espresso.NoMatchingRootException;
 import com.google.android.apps.common.testing.ui.espresso.Root;
 import com.google.android.apps.common.testing.ui.espresso.UiController;
@@ -174,8 +175,8 @@ public final class RootViewPicker implements Provider<View> {
           break;
         }
       }
-      throw new RuntimeException("No activities in stage RESUMED. Did you forget to launch the "
-          + "activity. (test.getActivity() or similar)?");
+      throw new NoActivityResumedException("No activities in stage RESUMED. Did you forget to "
+          + "launch the activity. (test.getActivity() or similar)?");
     }
   }
 

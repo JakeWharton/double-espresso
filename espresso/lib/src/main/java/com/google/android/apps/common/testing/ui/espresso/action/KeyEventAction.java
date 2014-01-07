@@ -6,6 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
 import com.google.android.apps.common.testing.testrunner.Stage;
 import com.google.android.apps.common.testing.ui.espresso.InjectEventSecurityException;
+import com.google.android.apps.common.testing.ui.espresso.NoActivityResumedException;
 import com.google.android.apps.common.testing.ui.espresso.PerformException;
 import com.google.android.apps.common.testing.ui.espresso.UiController;
 import com.google.android.apps.common.testing.ui.espresso.ViewAction;
@@ -90,11 +91,11 @@ public final class KeyEventAction implements ViewAction {
           .getActivitiesInStage(Stage.RESUMED)
           .isEmpty();
       if (!activeActivities) {
-        throw new PerformException.Builder()
+        Throwable cause = new PerformException.Builder()
           .withActionDescription(this.getDescription())
           .withViewDescription(HumanReadables.describe(view))
-          .withCause(new RuntimeException("Pressed back and killed the app"))
           .build();
+        throw new NoActivityResumedException("Pressed back and killed the app", cause);
       }
     }
 

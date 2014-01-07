@@ -1,13 +1,13 @@
 package com.google.android.apps.common.testing.ui.espresso.matcher;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitor;
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
 import com.google.android.apps.common.testing.testrunner.Stage;
+import com.google.android.apps.common.testing.ui.espresso.NoActivityResumedException;
 import com.google.android.apps.common.testing.ui.espresso.Root;
 import com.google.common.collect.Lists;
 
@@ -34,12 +34,12 @@ public final class RootMatchers {
    * Espresso's default {@link Root} matcher.
    */
   @SuppressWarnings("unchecked")
-  public static final Matcher<Root> DEFAULT = 
+  public static final Matcher<Root> DEFAULT =
       allOf(
-        hasWindowLayoutParams(), 
+        hasWindowLayoutParams(),
         allOf(
               anyOf(
-                  allOf(isDialog(), withDecorView(hasWindowFocus())), 
+                  allOf(isDialog(), withDecorView(hasWindowFocus())),
                   isSubwindowOfCurrentActivity()),
               anyOf(isFocusable(), isTouchable())));
 
@@ -188,7 +188,9 @@ public final class RootMatchers {
         ActivityLifecycleMonitorRegistry.getInstance();
     Collection<Activity> resumedActivities =
         activityLifecycleMonitor.getActivitiesInStage(Stage.RESUMED);
-    checkState(resumedActivities.size() >= 1, "At least one activity should be in RESUMED stage.");
+    if (resumedActivities.isEmpty()) {
+      throw new NoActivityResumedException("At least one activity should be in RESUMED stage.");
+    }
     List<IBinder> tokens = Lists.newArrayList();
     for (Activity activity : resumedActivities) {
       tokens.add(activity.getWindow().getDecorView().getApplicationWindowToken());
