@@ -8,7 +8,6 @@ import android.view.View;
 
 import junit.framework.TestCase;
 
-import org.junit.Test;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -51,42 +50,36 @@ public class GeneralLocationTest extends TestCase {
             VIEW_POSITION_Y + VIEW_HEIGHT);
   }
 
-  @Test
   public void testLeftLocationsX() {
       assertPositionEquals(VIEW_POSITION_X, GeneralLocation.TOP_LEFT, AXIS_X);
       assertPositionEquals(VIEW_POSITION_X, GeneralLocation.CENTER_LEFT, AXIS_X);
       assertPositionEquals(VIEW_POSITION_X, GeneralLocation.BOTTOM_LEFT, AXIS_X);
   }
 
-  @Test
   public void testRightLocationsX() {
     assertPositionEquals(VIEW_POSITION_X + VIEW_WIDTH, GeneralLocation.TOP_RIGHT, AXIS_X);
     assertPositionEquals(VIEW_POSITION_X + VIEW_WIDTH, GeneralLocation.CENTER_RIGHT, AXIS_X);
     assertPositionEquals(VIEW_POSITION_X + VIEW_WIDTH, GeneralLocation.BOTTOM_RIGHT, AXIS_X);
   }
 
-  @Test
   public void testTopLocationsY() {
     assertPositionEquals(VIEW_POSITION_Y, GeneralLocation.TOP_LEFT, AXIS_Y);
     assertPositionEquals(VIEW_POSITION_Y, GeneralLocation.TOP_CENTER, AXIS_Y);
     assertPositionEquals(VIEW_POSITION_Y, GeneralLocation.TOP_RIGHT, AXIS_Y);
   }
 
-  @Test
   public void testBottomLocationsY() {
     assertPositionEquals(VIEW_POSITION_Y + VIEW_HEIGHT, GeneralLocation.BOTTOM_LEFT, AXIS_Y);
     assertPositionEquals(VIEW_POSITION_Y + VIEW_HEIGHT, GeneralLocation.BOTTOM_CENTER, AXIS_Y);
     assertPositionEquals(VIEW_POSITION_Y + VIEW_HEIGHT, GeneralLocation.BOTTOM_RIGHT, AXIS_Y);
   }
 
-  @Test
   public void testCenterLocationsX() {
     assertPositionEquals(VIEW_POSITION_X + VIEW_WIDTH / 2, GeneralLocation.CENTER, AXIS_X);
     assertPositionEquals(VIEW_POSITION_X + VIEW_WIDTH / 2, GeneralLocation.TOP_CENTER, AXIS_X);
     assertPositionEquals(VIEW_POSITION_X + VIEW_WIDTH / 2, GeneralLocation.BOTTOM_CENTER, AXIS_X);
   }
 
-  @Test
   public void testCenterLocationsY() {
     assertPositionEquals(VIEW_POSITION_Y + VIEW_HEIGHT / 2, GeneralLocation.CENTER, AXIS_Y);
     assertPositionEquals(VIEW_POSITION_Y + VIEW_HEIGHT / 2, GeneralLocation.CENTER_LEFT, AXIS_Y);

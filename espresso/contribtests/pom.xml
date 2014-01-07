@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.google.android.apps.common.testing</groupId>
-    <artifactId>TestKit</artifactId>
+    <artifactId>espresso-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>testapp-test</artifactId>
+  <artifactId>espresso-contrib-test</artifactId>
   <packaging>apk</packaging>
-  <name>Tests For the Test App</name>
+  <name>Tests for the Espresso Contrib Library</name>
   <dependencies>
     <dependency>
       <groupId>com.google.android</groupId>
@@ -34,11 +34,10 @@
       <scope>provided</scope>
       <version>${project.version}</version>
     </dependency>
-    <!-- we have a direct compile / install time dependency on the espresso
-         testing framework - otherwise what will we test? -->
     <dependency>
       <groupId>com.google.android.apps.common.testing</groupId>
-      <artifactId>espresso</artifactId>
+      <artifactId>espresso-contrib</artifactId>
+      <scope>provided</scope>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -48,8 +47,7 @@
     </dependency>
     <dependency>
       <groupId>com.google.android.apps.common.testing</groupId>
-      <artifactId>espresso-contrib</artifactId>
-      <scope>provided</scope>
+      <artifactId>testrunner-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

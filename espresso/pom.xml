@@ -12,5 +12,7 @@
   <modules>
     <module>lib</module>
     <module>libtests</module>
+    <module>contrib</module>
+    <module>contribtests</module>
   </modules>
 </project>

@@ -13,9 +13,9 @@
     <module>testrunner-runtime</module>
   </modules>
   <properties>
-    <android.plugin.version>3.6.0</android.plugin.version>
-    <android.v4.support.version>18</android.v4.support.version>
-    <android.v7.support.version>18</android.v7.support.version>
+    <android.plugin.version>3.8.1</android.plugin.version>
+    <android.v4.support.version>19.0.1</android.v4.support.version>
+    <android.v7.support.version>19.0.1</android.v7.support.version>
     <dagger.version>1.1.0</dagger.version>
     <dexmaker.version>1.0</dexmaker.version>
     <guava.version>14.0.1</guava.version>
