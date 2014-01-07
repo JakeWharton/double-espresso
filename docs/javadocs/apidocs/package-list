@@ -1,0 +1,11 @@
+com.google.android.apps.common.testing.testrunner
+com.google.android.apps.common.testing.testrunner.annotations
+com.google.android.apps.common.testing.testrunner.inject
+com.google.android.apps.common.testing.testrunner.util
+com.google.android.apps.common.testing.ui.espresso
+com.google.android.apps.common.testing.ui.espresso.action
+com.google.android.apps.common.testing.ui.espresso.assertion
+com.google.android.apps.common.testing.ui.espresso.base
+com.google.android.apps.common.testing.ui.espresso.contrib
+com.google.android.apps.common.testing.ui.espresso.matcher
+com.google.android.apps.common.testing.ui.espresso.util
