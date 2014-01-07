@@ -172,8 +172,28 @@ public final class ViewActions {
   }
 
   /**
+   * Returns an action that types the provided string into the view.
+   * Appending a \n to the end of the string translates to a ENTER key event. Note: this method
+   * does not change cursor position in the focused view - text is inserted at the location where
+   * the cursor is currently pointed.<br>
+   * <br>
+   * View preconditions:
+   * <ul>
+   * <li>must be displayed on screen
+   * <li>must support input methods
+   * <li>must be already focused
+   * <ul>
+   */
+  public static ViewAction typeTextIntoFocusedView(String stringToBeTyped) {
+    return new TypeTextAction(stringToBeTyped, false /* tapToFocus */);
+  }
+
+  /**
    * Returns an action that selects the view (by clicking on it) and types the provided string into
-   * the view. Appending a \n to the end of the string translates to a ENTER key event. <br>
+   * the view. Appending a \n to the end of the string translates to a ENTER key event. Note: this
+   * method performs a tap on the view before typing to force the view into focus, if the view 
+   * already contains text this tap may place the cursor at an arbitrary position within the text.
+   * <br>
    * <br>
    * View preconditions:
    * <ul>

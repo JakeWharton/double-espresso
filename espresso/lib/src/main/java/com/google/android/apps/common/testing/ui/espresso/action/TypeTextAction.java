@@ -1,5 +1,6 @@
 package com.google.android.apps.common.testing.ui.espresso.action;
 
+import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.hasFocus;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayed;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.supportsInputMethods;
@@ -26,22 +27,40 @@ import org.hamcrest.Matcher;
 public final class TypeTextAction implements ViewAction {
   private static final String TAG = TypeTextAction.class.getSimpleName();
   private final String stringToBeTyped;
+  private final boolean tapToFocus;
+
+  /**
+   * Constructs {@link TypeTextAction} with given string. If the string is empty it results in no-op
+   * (nothing is typed). By default this action sends a tap event to the center of the view to 
+   * attain focus before typing.
+   *
+   * @param stringToBeTyped String To be typed by {@link TypeTextAction}
+   */
+  public TypeTextAction(String stringToBeTyped) {
+    this(stringToBeTyped, true);
+  }
 
   /**
    * Constructs {@link TypeTextAction} with given string. If the string is empty it results in no-op
    * (nothing is typed).
    *
    * @param stringToBeTyped String To be typed by {@link TypeTextAction}
+   * @param tapToFocus indicates whether a tap should be sent to the underlying view before typing.
    */
-  public TypeTextAction(String stringToBeTyped) {
+  public TypeTextAction(String stringToBeTyped, boolean tapToFocus) {
     checkNotNull(stringToBeTyped);
     this.stringToBeTyped = stringToBeTyped;
+    this.tapToFocus = tapToFocus;
   }
 
   @SuppressWarnings("unchecked")
   @Override
   public Matcher<View> getConstraints() {
     Matcher<View> matchers = allOf(isDisplayed());
+    if (!tapToFocus) {
+      matchers = allOf(matchers, hasFocus());
+    }
+
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
        return allOf(matchers, supportsInputMethods());
     } else {
@@ -59,10 +78,12 @@ public final class TypeTextAction implements ViewAction {
       return;
     }
 
-    // Perform a click.
-    new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.FINGER)
-        .perform(uiController, view);
-    uiController.loopMainThreadUntilIdle();
+    if (tapToFocus) {
+      // Perform a click.
+      new GeneralClickAction(Tap.SINGLE, GeneralLocation.CENTER, Press.FINGER)
+          .perform(uiController, view);
+      uiController.loopMainThreadUntilIdle();
+    }
 
     try {
       if (!uiController.injectString(stringToBeTyped)) {
