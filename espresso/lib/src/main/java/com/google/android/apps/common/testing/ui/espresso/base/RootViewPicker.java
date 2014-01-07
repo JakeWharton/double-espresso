@@ -154,7 +154,7 @@ public final class RootViewPicker implements Provider<View> {
     if (resumedActivities.isEmpty()) {
       List<Activity> activities = Lists.newArrayList();
       for (Stage s : EnumSet.range(Stage.PRE_ON_CREATE, Stage.RESTARTED)) {
-        activities.addAll(activityLifecycleMonitor.getActivitiesInStage(Stage.RESUMED));
+        activities.addAll(activityLifecycleMonitor.getActivitiesInStage(s));
       }
       if (activities.isEmpty()) {
         throw new RuntimeException("No activities found. Did you forget to launch the activity "
