@@ -175,7 +175,7 @@ public final class RootViewPicker implements Provider<View> {
         uiController.loopMainThreadForAtLeast(waitTimes[waitIdx]);
         resumedActivities = activityLifecycleMonitor.getActivitiesInStage(Stage.RESUMED);
         if (!resumedActivities.isEmpty()) {
-          break;
+          return; // one of the pending activities has resumed
         }
       }
       throw new NoActivityResumedException("No activities in stage RESUMED. Did you forget to "
