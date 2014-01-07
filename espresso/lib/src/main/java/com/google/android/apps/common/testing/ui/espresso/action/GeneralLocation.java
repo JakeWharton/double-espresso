@@ -65,8 +65,8 @@ public enum GeneralLocation implements CoordinatesProvider {
   private static float[] getCoordinates(View view, Position vertical, Position horizontal) {
     final int[] xy = new int[2];
     view.getLocationOnScreen(xy);
-    final float x = vertical.getPosition(xy[0], view.getWidth());
-    final float y = horizontal.getPosition(xy[1], view.getHeight());
+    final float x = horizontal.getPosition(xy[0], view.getWidth());
+    final float y = vertical.getPosition(xy[1], view.getHeight());
     float[] coordinates = {x, y};
     return coordinates;
   }
