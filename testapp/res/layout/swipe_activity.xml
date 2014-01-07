@@ -5,9 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+  <!-- With update to rev 19, swipe does not consistently work on small pagers
+       b/12113054 opened to investigate why this regressed .-->
   <android.support.v4.view.ViewPager
       android:id="@+id/small_pager"
-      android:layout_width="48dp"
+      android:layout_width="120dp"
       android:layout_height="48dp" />
 
   <RelativeLayout
