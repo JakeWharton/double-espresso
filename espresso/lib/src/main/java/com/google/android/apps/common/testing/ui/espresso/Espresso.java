@@ -39,17 +39,19 @@ public final class Espresso {
   private Espresso() {}
 
   /**
-   * Creates an {@link ViewInteraction} for a given view. Note: the view has to be part of the
-   * view hierarchy. This may not be the case if it is rendered as part of an AdapterView
-   * (e.g. ListView). If this is the case, use Espresso.onData to load the view first.
+   * Creates an {@link PartiallyScopedViewInteraction} for a given view. Note: the view has
+   * to be part of the  view hierarchy. This may not be the case if it is rendered as part of
+   * an AdapterView (e.g. ListView). If this is the case, use Espresso.onData to load the view
+   * first.
    *
    * @param viewMatcher used to select the view.
    * @see #onData
    */
-  public static ViewInteraction onView(Matcher<View> viewMatcher) {
-    return espressoGraph().plus(new ViewInteractionModule(viewMatcher))
-        .get(ViewInteraction.class);
+  public static PartiallyScopedViewInteraction onView(final Matcher<View> viewMatcher) {
+    return new PartiallyScopedViewInteraction(viewMatcher);
   }
+
+
 
   /**
    * Creates an {@link DataInteraction} for a data object displayed by the application. Use this
@@ -124,7 +126,7 @@ public final class Espresso {
    * Closes soft keyboard if open.
    */
   public static void closeSoftKeyboard() {
-    Espresso.onView(isRoot()).perform(ViewActions.closeSoftKeyboard());
+    onView(isRoot()).perform(ViewActions.closeSoftKeyboard());
   }
 
   /**
@@ -233,4 +235,50 @@ public final class Espresso {
     }
   }
 
+  /**
+   * Represents a ViewInteraction which has not had a root matcher provided for it.
+   *
+   * By default Espresso uses a heuristic to choose the root window to operate on. Normally this
+   * is sufficient, however certain UX patterns may require the user to explicitly control which
+   * window Espresso operates upon.
+   *
+   * @see ViewInteraction
+   */
+  public static final class PartiallyScopedViewInteraction {
+    private final Matcher<View> viewMatcher;
+    private PartiallyScopedViewInteraction(Matcher<View> viewMatcher) {
+      this.viewMatcher = checkNotNull(viewMatcher);
+    }
+
+    /**
+     * Creates a ViewInteraction scoped to the root selected by the given root matcher.
+     */
+    public ViewInteraction inRoot(Matcher<Root> rootMatcher) {
+      checkNotNull(rootMatcher);
+      return espressoGraph().plus(new ViewInteractionModule(viewMatcher, rootMatcher))
+          .get(ViewInteraction.class);
+    }
+
+    /**
+     * Creates a ViewInteraction scoped to the the root selected by Espresso's heuristics
+     * and performs the given ViewActions.
+     *
+     * @see ViewInteraction#perform(ViewAction...)
+     */
+    public ViewInteraction perform(ViewAction... actions) {
+      return espressoGraph().plus(new ViewInteractionModule(viewMatcher))
+          .get(ViewInteraction.class).perform(actions);
+    }
+
+    /**
+     * Creates a ViewInteraction scoped to the the root selected by Espresso's heuristics
+     * and performs the given ViewAssertion.
+     *
+     * @see ViewInteraction#check(ViewAssertion)
+     */
+    public ViewInteraction check(ViewAssertion viewAssert) {
+      return espressoGraph().plus(new ViewInteractionModule(viewMatcher))
+          .get(ViewInteraction.class).check(viewAssert);
+    }
+  }
 }

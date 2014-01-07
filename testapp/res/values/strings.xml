@@ -58,6 +58,7 @@
     <string name="hello_world">hello world!</string>
     <string name="request_hello_world">Request hello world</string>
     <string name="nav_drawer_open">Open navigation drawer</string>
+    <string name="pick_water">Pick a body of water</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
 
     <string-array name="spinner_array">

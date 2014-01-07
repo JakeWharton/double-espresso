@@ -263,6 +263,16 @@
             android:onClick="showPopupView"
             android:text="@string/make_popup_view_button" />
 
+        <AutoCompleteTextView
+            android:id="@+id/auto_complete_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:completionThreshold="1"
+            android:hint="@string/pick_water"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
         <!-- Keep this on bottom to test scrolling to views that are not showing. -->
         <!-- Huge top margin to guarantee this being out of view on large screen layout. -->
 

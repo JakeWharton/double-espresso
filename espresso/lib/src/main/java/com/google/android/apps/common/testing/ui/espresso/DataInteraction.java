@@ -11,6 +11,7 @@ import com.google.android.apps.common.testing.ui.espresso.action.AdapterDataLoad
 import com.google.android.apps.common.testing.ui.espresso.action.AdapterViewProtocol;
 import com.google.android.apps.common.testing.ui.espresso.action.AdapterViewProtocol.AdaptedData;
 import com.google.android.apps.common.testing.ui.espresso.action.AdapterViewProtocols;
+import com.google.android.apps.common.testing.ui.espresso.matcher.RootMatchers;
 import com.google.common.base.Optional;
 
 import android.view.View;
@@ -52,6 +53,7 @@ public class DataInteraction {
   private Optional<Matcher<View>> childViewMatcher = Optional.absent();
   private Optional<Integer> atPosition = Optional.absent();
   private AdapterViewProtocol adapterViewProtocol = AdapterViewProtocols.standardProtocol();
+  private Matcher<Root> rootMatcher = RootMatchers.DEFAULT;
 
   DataInteraction(Matcher<Object> dataMatcher) {
     this.dataMatcher = checkNotNull(dataMatcher);
@@ -63,6 +65,14 @@ public class DataInteraction {
    */
   public DataInteraction onChildView(Matcher<View> childMatcher) {
     this.childViewMatcher = Optional.of(checkNotNull(childMatcher));
+    return this;
+  }
+
+  /**
+   * Causes this data interaction to work within the Root specified by the given root matcher.
+   */
+  public DataInteraction inRoot(Matcher<Root> rootMatcher) {
+    this.rootMatcher = checkNotNull(rootMatcher);
     return this;
   }
 
@@ -102,6 +112,7 @@ public class DataInteraction {
      AdapterDataLoaderAction adapterDataLoaderAction = load();
 
     return onView(makeTargetMatcher(adapterDataLoaderAction))
+        .inRoot(rootMatcher)
         .perform(actions);
   }
 
@@ -114,6 +125,7 @@ public class DataInteraction {
      AdapterDataLoaderAction adapterDataLoaderAction = load();
 
     return onView(makeTargetMatcher(adapterDataLoaderAction))
+        .inRoot(rootMatcher)
         .check(assertion);
   }
 
@@ -121,6 +133,7 @@ public class DataInteraction {
     AdapterDataLoaderAction adapterDataLoaderAction =
        new AdapterDataLoaderAction(dataMatcher, atPosition, adapterViewProtocol);
     onView(adapterMatcher)
+      .inRoot(rootMatcher)
       .perform(adapterDataLoaderAction);
     return adapterDataLoaderAction;
   }

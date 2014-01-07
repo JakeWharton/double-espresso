@@ -7,19 +7,15 @@ import com.google.android.apps.common.testing.testrunner.inject.TargetContext;
 import com.google.android.apps.common.testing.ui.espresso.FailureHandler;
 import com.google.android.apps.common.testing.ui.espresso.Root;
 import com.google.android.apps.common.testing.ui.espresso.UiController;
-import com.google.android.apps.common.testing.ui.espresso.matcher.RootMatchers;
 import com.google.common.base.Optional;
 
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 
 import dagger.Module;
 import dagger.Provides;
-
-import org.hamcrest.Matcher;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -94,12 +90,6 @@ public class BaseLayerModule {
     return rootsOracle.get();
   }
 
-  @Provides
-  public View provideRootView(RootViewPicker rootViewPicker) {
-    // RootsOracle acts as a provider, but returning Providers is illegal, so delegate.
-    return rootViewPicker.get();
-  }
-
   @Provides @Singleton
   public EventInjector provideEventInjector() {
     // On API 16 and above, android uses input manager to inject events. On API < 16,
@@ -156,11 +146,6 @@ public class BaseLayerModule {
   @Default
   FailureHandler provideFailureHander(DefaultFailureHandler impl) {
     return impl;
-  }
-
-  @Provides
-  Matcher<Root> provideRootMatcher() {
-    return RootMatchers.DEFAULT;
   }
 
 }

@@ -17,6 +17,8 @@ import android.view.View.OnKeyListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
@@ -70,6 +72,17 @@ public class SendActivity extends Activity {
         return false;
       }
     });
+    AutoCompleteTextView autoComplete = (AutoCompleteTextView) findViewById(
+        R.id.auto_complete_text_view);
+    String [] completions = new String[] {
+      "Pacific Ocean", "Atlantic Ocean", "Indian Ocean", "Southern Ocean", "Artic Ocean",
+      "Mediterranean Sea", "Caribbean Sea", "South China Sea", "Bering Sea",
+      "Gulf of Mexico", "Okhotsk Sea", "East China Sea", "Hudson Bay", "Japan Sea",
+      "Andaman Sea", "North Sea", "Red Sea", "Baltic Sea" };
+    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        android.R.layout.simple_dropdown_item_1line,
+        completions);
+    autoComplete.setAdapter(adapter);
   }
 
   /** Called when user clicks the Send button */
