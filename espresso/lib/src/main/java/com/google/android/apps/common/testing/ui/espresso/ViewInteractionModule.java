@@ -15,7 +15,7 @@ import org.hamcrest.Matcher;
  * Adds the user interaction scope to the Espresso graph.
  */
 @Module(
-    addsTo = Espresso.EspressoModule.class,
+    addsTo = GraphHolder.EspressoModule.class,
     injects = {ViewInteraction.class})
 class ViewInteractionModule {
 

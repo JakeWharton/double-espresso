@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.endsWith;
 
-import com.google.android.apps.common.testing.testrunner.UsageTrackerRegistry;
 import com.google.android.apps.common.testing.ui.espresso.action.ViewActions;
 import com.google.android.apps.common.testing.ui.espresso.base.BaseLayerModule;
 import com.google.android.apps.common.testing.ui.espresso.base.IdlingResourceRegistry;
@@ -22,7 +21,6 @@ import android.os.Build;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import dagger.Module;
 import dagger.ObjectGraph;
 
 import org.hamcrest.Matcher;
@@ -33,15 +31,8 @@ import org.hamcrest.Matcher;
  */
 public final class Espresso {
 
-  private static final ObjectGraph espressoGraph;
-
-  static {
-    espressoGraph = ObjectGraph.create(EspressoModule.class);
-    UsageTrackerRegistry.getInstance().trackUsage("Espresso");
-  }
-
   static ObjectGraph espressoGraph() {
-    return espressoGraph;
+    return GraphHolder.graph();
   }
 
   private Espresso() {}
@@ -55,7 +46,7 @@ public final class Espresso {
    * @see #onData
    */
   public static ViewInteraction onView(Matcher<View> viewMatcher) {
-    return espressoGraph.plus(new ViewInteractionModule(viewMatcher))
+    return espressoGraph().plus(new ViewInteractionModule(viewMatcher))
         .get(ViewInteraction.class);
   }
 
@@ -77,7 +68,7 @@ public final class Espresso {
    */
   public static void registerIdlingResources(IdlingResource... resources) {
     checkNotNull(resources);
-    IdlingResourceRegistry registry = espressoGraph.get(IdlingResourceRegistry.class);
+    IdlingResourceRegistry registry = espressoGraph().get(IdlingResourceRegistry.class);
     for (IdlingResource resource : resources) {
       registry.register(resource);
     }
@@ -87,7 +78,7 @@ public final class Espresso {
    * Changes the default {@link FailureHandler} to the given one.
    */
   public static void setFailureHandler(FailureHandler failureHandler) {
-    espressoGraph.get(BaseLayerModule.FailureHandlerHolder.class)
+    espressoGraph().get(BaseLayerModule.FailureHandlerHolder.class)
         .update(checkNotNull(failureHandler));
   }
 
@@ -213,13 +204,6 @@ public final class Espresso {
       }
       return actionButtonCount > 1;
     }
-  }
-
-  @Module(
-    includes = BaseLayerModule.class,
-    injects = IdlingResourceRegistry.class
-  )
-  static class EspressoModule {
   }
 
 }
