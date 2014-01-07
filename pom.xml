@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+ <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0   http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.android.apps.common.testing</groupId>
   <artifactId>TestKit</artifactId>
-  <version>${com.google.android.apps.common.testing.version}</version>
+  <version>1.1</version>
   <packaging>pom</packaging>
   <modules>
     <module>espresso</module>
@@ -13,7 +13,6 @@
     <module>testrunner-runtime</module>
   </modules>
   <properties>
-    <com.google.android.apps.common.testing.version>1.1-SNAPSHOT</com.google.android.apps.common.testing.version>
     <android.plugin.version>3.8.1</android.plugin.version>
     <android.v4.support.version>19.0.1</android.v4.support.version>
     <android.v7.support.version>19.0.1</android.v7.support.version>
