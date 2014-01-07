@@ -19,6 +19,7 @@ import org.hamcrest.StringDescription;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 
@@ -40,6 +41,7 @@ public final class ViewInteraction {
   private final Executor mainThreadExecutor;
   private final FailureHandler failureHandler;
   private final Matcher<View> viewMatcher;
+  private final AtomicReference<Matcher<Root>> rootMatcherRef;
 
   @Inject
   ViewInteraction(
@@ -47,12 +49,14 @@ public final class ViewInteraction {
       ViewFinder viewFinder,
       @MainThread Executor mainThreadExecutor,
       FailureHandler failureHandler,
-      Matcher<View> viewMatcher) {
+      Matcher<View> viewMatcher,
+      AtomicReference<Matcher<Root>> rootMatcherRef) {
     this.viewFinder = checkNotNull(viewFinder);
     this.uiController = checkNotNull(uiController);
     this.failureHandler = checkNotNull(failureHandler);
     this.mainThreadExecutor = checkNotNull(mainThreadExecutor);
     this.viewMatcher = checkNotNull(viewMatcher);
+    this.rootMatcherRef = checkNotNull(rootMatcherRef);
   }
 
   /**
@@ -68,6 +72,15 @@ public final class ViewInteraction {
     for (ViewAction action : viewActions) {
       doPerform(action);
     }
+    return this;
+  }
+
+
+  /**
+   * Makes this ViewInteraction scoped to the root selected by the given root matcher.
+   */
+  public ViewInteraction inRoot(Matcher<Root> rootMatcher) {
+    this.rootMatcherRef.set(checkNotNull(rootMatcher));
     return this;
   }
 

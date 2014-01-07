@@ -12,6 +12,7 @@ import dagger.Module;
 import dagger.Provides;
 
 import org.hamcrest.Matcher;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Adds the user interaction scope to the Espresso graph.
@@ -22,19 +23,15 @@ import org.hamcrest.Matcher;
 class ViewInteractionModule {
 
   private final Matcher<View> viewMatcher;
-  private final Matcher<Root> rootMatcher;
+  private final AtomicReference<Matcher<Root>> rootMatcher =
+      new AtomicReference<Matcher<Root>>(RootMatchers.DEFAULT);
 
   ViewInteractionModule(Matcher<View> viewMatcher) {
-    this(viewMatcher, RootMatchers.DEFAULT);
-  }
-
-  ViewInteractionModule(Matcher<View> viewMatcher, Matcher<Root> rootMatcher) {
     this.viewMatcher = checkNotNull(viewMatcher);
-    this.rootMatcher = checkNotNull(rootMatcher);
   }
 
   @Provides
-  Matcher<Root> provideRootMatcher() {
+  AtomicReference<Matcher<Root>> provideRootMatcher() {
     return rootMatcher;
   }
 

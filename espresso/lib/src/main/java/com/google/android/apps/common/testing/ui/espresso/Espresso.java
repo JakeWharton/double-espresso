@@ -47,8 +47,8 @@ public final class Espresso {
    * @param viewMatcher used to select the view.
    * @see #onData
    */
-  public static PartiallyScopedViewInteraction onView(final Matcher<View> viewMatcher) {
-    return new PartiallyScopedViewInteraction(viewMatcher);
+  public static ViewInteraction onView(final Matcher<View> viewMatcher) {
+    return espressoGraph().plus(new ViewInteractionModule(viewMatcher)).get(ViewInteraction.class);
   }
 
 
@@ -235,50 +235,5 @@ public final class Espresso {
     }
   }
 
-  /**
-   * Represents a ViewInteraction which has not had a root matcher provided for it.
-   *
-   * By default Espresso uses a heuristic to choose the root window to operate on. Normally this
-   * is sufficient, however certain UX patterns may require the user to explicitly control which
-   * window Espresso operates upon.
-   *
-   * @see ViewInteraction
-   */
-  public static final class PartiallyScopedViewInteraction {
-    private final Matcher<View> viewMatcher;
-    private PartiallyScopedViewInteraction(Matcher<View> viewMatcher) {
-      this.viewMatcher = checkNotNull(viewMatcher);
-    }
 
-    /**
-     * Creates a ViewInteraction scoped to the root selected by the given root matcher.
-     */
-    public ViewInteraction inRoot(Matcher<Root> rootMatcher) {
-      checkNotNull(rootMatcher);
-      return espressoGraph().plus(new ViewInteractionModule(viewMatcher, rootMatcher))
-          .get(ViewInteraction.class);
-    }
-
-    /**
-     * Creates a ViewInteraction scoped to the the root selected by Espresso's heuristics
-     * and performs the given ViewActions.
-     *
-     * @see ViewInteraction#perform(ViewAction...)
-     */
-    public ViewInteraction perform(ViewAction... actions) {
-      return espressoGraph().plus(new ViewInteractionModule(viewMatcher))
-          .get(ViewInteraction.class).perform(actions);
-    }
-
-    /**
-     * Creates a ViewInteraction scoped to the the root selected by Espresso's heuristics
-     * and performs the given ViewAssertion.
-     *
-     * @see ViewInteraction#check(ViewAssertion)
-     */
-    public ViewInteraction check(ViewAssertion viewAssert) {
-      return espressoGraph().plus(new ViewInteractionModule(viewMatcher))
-          .get(ViewInteraction.class).check(viewAssert);
-    }
-  }
 }

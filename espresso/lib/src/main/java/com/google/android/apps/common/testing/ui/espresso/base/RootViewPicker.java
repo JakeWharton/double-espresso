@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -42,22 +43,24 @@ public final class RootViewPicker implements Provider<View> {
   private final Provider<List<Root>> rootsOracle;
   private final UiController uiController;
   private final ActivityLifecycleMonitor activityLifecycleMonitor;
-  private final Matcher<Root> rootMatcher;
+  private final AtomicReference<Matcher<Root>> rootMatcherRef;
 
   private List<Root> roots;
 
   @Inject
   RootViewPicker(Provider<List<Root>> rootsOracle, UiController uiController,
-      ActivityLifecycleMonitor activityLifecycleMonitor, Matcher<Root> rootMatcher) {
+      ActivityLifecycleMonitor activityLifecycleMonitor,
+      AtomicReference<Matcher<Root>> rootMatcherRef) {
     this.rootsOracle = rootsOracle;
     this.uiController = uiController;
     this.activityLifecycleMonitor = activityLifecycleMonitor;
-    this.rootMatcher = rootMatcher;
+    this.rootMatcherRef = rootMatcherRef;
   }
 
   @Override
   public View get() {
     checkState(Looper.getMainLooper().equals(Looper.myLooper()), "must be called on main thread.");
+    Matcher<Root> rootMatcher = rootMatcherRef.get();
 
     Root root = findRoot(rootMatcher);
 

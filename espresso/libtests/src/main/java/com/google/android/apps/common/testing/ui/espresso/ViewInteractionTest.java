@@ -4,6 +4,7 @@ import static com.google.common.base.Throwables.propagate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,6 +12,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitor;
 import com.google.android.apps.common.testing.testrunner.ActivityLifecycleMonitorRegistry;
+import com.google.android.apps.common.testing.ui.espresso.matcher.RootMatchers;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.MoreExecutors;
 
@@ -22,6 +24,7 @@ import org.hamcrest.Matchers;
 import org.mockito.Mock;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** Unit tests for {@link ViewInteraction}. */
 public class ViewInteractionTest extends AndroidTestCase {
@@ -44,6 +47,7 @@ public class ViewInteractionTest extends AndroidTestCase {
   private View targetView;
   private Matcher<View> viewMatcher;
   private Matcher<View> actionConstraint;
+  private AtomicReference<Matcher<Root>> rootMatcherRef;
 
   @Override
   public void setUp() throws Exception {
@@ -54,6 +58,7 @@ public class ViewInteractionTest extends AndroidTestCase {
     targetView = new View(getContext());
     viewMatcher = is(targetView);
     actionConstraint = Matchers.<View>notNullValue();
+    rootMatcherRef = new AtomicReference<Matcher<Root>>(RootMatchers.DEFAULT);
     when(mockAction.getDescription()).thenReturn("A Mock!");
     failureHandler = new FailureHandler() {
       @Override
@@ -154,6 +159,22 @@ public class ViewInteractionTest extends AndroidTestCase {
           Optional.<NoMatchingViewException>absent());
   }
 
+  public void testInRootUpdatesRef() {
+    initInteraction();
+    Matcher<Root> testMatcher = nullValue();
+    testInteraction.inRoot(testMatcher);
+    assertEquals(testMatcher, rootMatcherRef.get());
+  }
+
+  public void testInRoot_NullHandling() {
+    initInteraction();
+    try {
+      testInteraction.inRoot(null);
+      fail("should throw");
+    } catch (NullPointerException expected) {
+    }
+  }
+
   public void testCheck_ViewCannotBeFound() {
     NoMatchingViewException noViewException = new NoMatchingViewException.Builder()
         .withViewMatcher(viewMatcher)
@@ -170,7 +191,7 @@ public class ViewInteractionTest extends AndroidTestCase {
     when(mockAction.getConstraints()).thenReturn(actionConstraint);
 
     testInteraction = new ViewInteraction(mockUiController, mockViewFinder, testExecutor,
-        failureHandler, viewMatcher);
+        failureHandler, viewMatcher, rootMatcherRef);
 
   }
 }
