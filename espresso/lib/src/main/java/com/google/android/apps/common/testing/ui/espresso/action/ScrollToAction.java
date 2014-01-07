@@ -5,6 +5,7 @@ import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMat
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
 
 import com.google.android.apps.common.testing.ui.espresso.PerformException;
 import com.google.android.apps.common.testing.ui.espresso.UiController;
@@ -15,6 +16,7 @@ import com.google.android.apps.common.testing.ui.espresso.util.HumanReadables;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
+import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
 
 import org.hamcrest.Matcher;
@@ -28,8 +30,8 @@ public final class ScrollToAction implements ViewAction {
   @SuppressWarnings("unchecked")
   @Override
   public Matcher<View> getConstraints() {
-    return allOf(withEffectiveVisibility(Visibility.VISIBLE),
-        isDescendantOfA(isAssignableFrom(ScrollView.class)));
+    return allOf(withEffectiveVisibility(Visibility.VISIBLE), isDescendantOfA(anyOf(
+        isAssignableFrom(ScrollView.class), isAssignableFrom(HorizontalScrollView.class))));
   }
 
   @Override
