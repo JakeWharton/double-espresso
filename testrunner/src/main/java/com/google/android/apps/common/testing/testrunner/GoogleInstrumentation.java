@@ -1,5 +1,3 @@
-// Copyright 2012 Google Inc. All Rights Reserved.
-
 package com.google.android.apps.common.testing.testrunner;
 
 import com.google.android.apps.common.testing.intento.IntentSpy;

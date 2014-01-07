@@ -1,5 +1,3 @@
-// Copyright 2013 Google Inc. All Rights Reserved.
-
 package com.google.android.apps.common.testing.ui.espresso;
 
 import android.test.suitebuilder.TestSuiteBuilder;
