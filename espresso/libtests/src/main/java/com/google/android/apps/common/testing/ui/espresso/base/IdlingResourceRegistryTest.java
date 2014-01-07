@@ -119,7 +119,7 @@ public class IdlingResourceRegistryTest extends InstrumentationTestCase {
     registry.register(r3);
 
     handler.post(new Runnable() {
-      
+
       @Override
       public void run() {
         registry.notifyWhenAllResourcesAreIdle(new IdleNotificationCallback() {

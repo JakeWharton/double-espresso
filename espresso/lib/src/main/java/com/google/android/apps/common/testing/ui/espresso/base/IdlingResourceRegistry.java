@@ -75,6 +75,17 @@ public final class IdlingResourceRegistry {
         }
       });
     } else {
+      for (IdlingResource oldResource : resources) {
+        if (resource.getName().equals(oldResource.getName())) {
+          // This does not throw an error to avoid leaving tests that register resource in test
+          // setup in an undeterministic state (we cannot assume that everyone clears vm state
+          // between each test run)
+          Log.e(TAG, String.format("Attempted to register resource with same names:" +
+              " %s. R1: %s R2: %s.\nDuplicate resource registration will be ignored.",
+              resource.getName(), resource, oldResource));
+          return;
+        }
+      }
       resources.add(resource);
       final int position = resources.size() - 1;
       registerToIdleCallback(resource, position);

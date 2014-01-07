@@ -96,6 +96,7 @@ public final class Espresso {
     checkNotNull(resources);
     IdlingResourceRegistry registry = espressoGraph().get(IdlingResourceRegistry.class);
     for (IdlingResource resource : resources) {
+      checkNotNull(resource.getName(), "IdlingResource.getName() should not be null");
       registry.register(resource);
     }
   }
@@ -109,7 +110,7 @@ public final class Espresso {
   }
 
   /********************************** Top Level Actions ******************************************/
-  
+
   // Ideally, this should be only allOf(isDisplayed(), withContentDescription("More options"))
   // But the ActionBarActivity compat lib is missing a content description for this element, so
   // we add the class name matcher as another option to find the view.

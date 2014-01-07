@@ -111,4 +111,26 @@ public class EspressoTest extends ActivityInstrumentationTestCase2<MainActivity>
     onView(withText("does not exist")).perform(click());
     assertTrue(handled.get());
   }
+
+  public void testRegisterResourceWithNullName() {
+    try {
+      Espresso.registerIdlingResources(new IdlingResource() {
+        @Override
+        public boolean isIdleNow() {
+          return true;
+        }
+
+        @Override
+        public String getName() {
+          return null;
+        }
+
+       @Override
+       public void registerIdleTransitionCallback(ResourceCallback callback) {
+         // ignore
+       }
+      });
+      fail("Should have thrown NPE");
+    } catch (NullPointerException expected) {}
+  }
 }
