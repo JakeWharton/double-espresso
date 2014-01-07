@@ -85,6 +85,7 @@ extends ExposedInstrumentationApi {
   private volatile boolean finished = false;
   private IntentSpy intentSpy = null;
 
+
   /**
    * Sets up intent spying, lifecycle monitoring, and argument registry.
    *
