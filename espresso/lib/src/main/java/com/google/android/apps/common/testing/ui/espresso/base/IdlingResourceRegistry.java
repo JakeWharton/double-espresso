@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.android.apps.common.testing.ui.espresso.IdlingPolicies;
+import com.google.android.apps.common.testing.ui.espresso.IdlingPolicy;
 import com.google.android.apps.common.testing.ui.espresso.IdlingResource;
 import com.google.android.apps.common.testing.ui.espresso.IdlingResource.ResourceCallback;
 import com.google.common.collect.Lists;
@@ -15,7 +17,6 @@ import android.util.Log;
 
 import java.util.BitSet;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,9 +32,6 @@ public final class IdlingResourceRegistry {
   private static final int TIMEOUT_OCCURRED = 2;
   private static final int IDLE_WARNING_REACHED = 3;
   private static final int POSSIBLE_RACE_CONDITION_DETECTED = 4;
-
-  private static final long TIMEOUT = TimeUnit.SECONDS.toMillis(26);
-  private static final long TIMEOUT_WARNING_INTERVAL = TimeUnit.SECONDS.toMillis(5);
 
   private static final IdleNotificationCallback NO_OP_CALLBACK = new IdleNotificationCallback() {
 
@@ -53,7 +51,6 @@ public final class IdlingResourceRegistry {
   private final BitSet idleState = new BitSet();
   private final Looper looper;
   private final Handler handler;
-
   private IdleNotificationCallback idleNotificationCallback = NO_OP_CALLBACK;
 
   @Inject
@@ -140,10 +137,15 @@ public final class IdlingResourceRegistry {
   }
 
   private void scheduleTimeoutMessages() {
+    IdlingPolicy warning = IdlingPolicies.getDynamicIdlingResourceWarningPolicy();
     Message timeoutWarning = handler.obtainMessage(IDLE_WARNING_REACHED);
-    handler.sendMessageDelayed(timeoutWarning, TIMEOUT_WARNING_INTERVAL);
+    handler.sendMessageDelayed(timeoutWarning, warning.getIdleTimeoutUnit().toMillis(
+        warning.getIdleTimeout()));
     Message timeoutError = handler.obtainMessage(TIMEOUT_OCCURRED);
-    handler.sendMessageDelayed(timeoutError, TIMEOUT);
+    IdlingPolicy error = IdlingPolicies.getDynamicIdlingResourceErrorPolicy();
+
+    handler.sendMessageDelayed(timeoutError, error.getIdleTimeoutUnit().toMillis(
+        error.getIdleTimeout()));
   }
 
   private List<String> getBusyResources() {
@@ -216,9 +218,11 @@ public final class IdlingResourceRegistry {
         // so we generate warnings if the system is still sane.
         handler.sendEmptyMessage(IDLE_WARNING_REACHED);
       } else {
+        IdlingPolicy warning = IdlingPolicies.getDynamicIdlingResourceWarningPolicy();
         idleNotificationCallback.resourcesStillBusyWarning(busyResources);
         handler.sendMessageDelayed(
-            handler.obtainMessage(IDLE_WARNING_REACHED), TIMEOUT_WARNING_INTERVAL);
+            handler.obtainMessage(IDLE_WARNING_REACHED),
+            warning.getIdleTimeoutUnit().toMillis(warning.getIdleTimeout()));
       }
     }
 

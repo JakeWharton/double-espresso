@@ -5,8 +5,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Throwables.propagate;
 
-import com.google.android.apps.common.testing.ui.espresso.AppNotIdleException;
-import com.google.android.apps.common.testing.ui.espresso.IdlingResourceTimeoutException;
+import com.google.android.apps.common.testing.ui.espresso.IdlingPolicies;
+import com.google.android.apps.common.testing.ui.espresso.IdlingPolicy;
 import com.google.android.apps.common.testing.ui.espresso.InjectEventSecurityException;
 import com.google.android.apps.common.testing.ui.espresso.UiController;
 import com.google.android.apps.common.testing.ui.espresso.base.IdlingResourceRegistry.IdleNotificationCallback;
@@ -45,7 +45,6 @@ import javax.inject.Singleton;
 final class UiControllerImpl implements UiController, Handler.Callback {
 
   private static final String TAG = UiControllerImpl.class.getSimpleName();
-  private static final int TIMEOUT_IN_SECONDS = 60;
 
   private static final Callable<Void> NO_OP = new Callable<Void>() {
     @Override
@@ -299,16 +298,19 @@ final class UiControllerImpl implements UiController, Handler.Callback {
       }
 
       if (!idlingResourceRegistry.allResourcesAreIdle()) {
+        final IdlingPolicy warning = IdlingPolicies.getDynamicIdlingResourceWarningPolicy();
+        final IdlingPolicy error = IdlingPolicies.getDynamicIdlingResourceErrorPolicy();
         idlingResourceRegistry.notifyWhenAllResourcesAreIdle(new IdleNotificationCallback() {
           @Override
           public void resourcesStillBusyWarning(List<String> busyResourceNames) {
-            Log.w(TAG, String.format(
-                "The following resources have still not idled:%s", busyResourceNames));
+            warning.handleTimeout(busyResourceNames, "IdlingResources are still busy!");
           }
 
           @Override
           public void resourcesHaveTimedOut(List<String> busyResourceNames) {
-            throw new IdlingResourceTimeoutException(busyResourceNames);
+            error.handleTimeout(busyResourceNames, "IdlingResources have timed out!");
+            controllerHandler.sendMessage(
+                IdleCondition.DYNAMIC_TASKS_HAVE_IDLED.createSignal(controllerHandler));
           }
 
           @Override
@@ -365,10 +367,12 @@ final class UiControllerImpl implements UiController, Handler.Callback {
   private void loopUntil(EnumSet<IdleCondition> conditions) {
     checkState(!looping, "Recursive looping detected!");
     looping = true;
+    IdlingPolicy masterIdlePolicy = IdlingPolicies.getMasterIdlingPolicy();
     try {
       int loopCount = 0;
       long start = SystemClock.uptimeMillis();
-      long end = start + TIMEOUT_IN_SECONDS * 1000;
+      long end = start + masterIdlePolicy.getIdleTimeoutUnit().toMillis(
+          masterIdlePolicy.getIdleTimeout());
       while (SystemClock.uptimeMillis() < end) {
         boolean conditionsMet = true;
         boolean shouldLogConditionState = loopCount > 0 && loopCount % 100 == 0;
@@ -427,7 +431,9 @@ final class UiControllerImpl implements UiController, Handler.Callback {
           idleConditions.add(condition.name());
         }
       }
-      throw AppNotIdleException.create(idleConditions, loopCount, TIMEOUT_IN_SECONDS);
+      masterIdlePolicy.handleTimeout(idleConditions, String.format(
+          "Looped for %s iterations over %s %s.", loopCount, masterIdlePolicy.getIdleTimeout(),
+          masterIdlePolicy.getIdleTimeoutUnit().name()));
     } finally {
       looping = false;
       for (IdleCondition condition : conditions) {
