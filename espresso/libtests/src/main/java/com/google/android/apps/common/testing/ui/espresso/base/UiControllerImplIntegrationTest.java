@@ -60,7 +60,7 @@ public class UiControllerImplIntegrationTest
         new AsyncTaskPoolMonitor(new ThreadPoolExecutorExtractor(
             Looper.getMainLooper()).getAsyncTaskThreadPool()),
         Optional.<AsyncTaskPoolMonitor>absent(),
-        new IdlingResourceRegistry(Looper.getMainLooper(), TimeUnit.SECONDS.toMillis(26)),
+        new IdlingResourceRegistry(Looper.getMainLooper()),
         Looper.getMainLooper());
   }
 

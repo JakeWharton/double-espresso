@@ -78,8 +78,7 @@ public class UiControllerImplTest extends TestCase {
       }
     });
     testThread.start();
-    idlingResourceRegistry = new IdlingResourceRegistry(testThread.getLooper(),
-      TimeUnit.SECONDS.toMillis(26));
+    idlingResourceRegistry = new IdlingResourceRegistry(testThread.getLooper());
     asyncPool = new ThreadPoolExecutor(3, 3, 1, TimeUnit.SECONDS,
         new LinkedBlockingQueue<Runnable>());
     EventInjector injector = null;

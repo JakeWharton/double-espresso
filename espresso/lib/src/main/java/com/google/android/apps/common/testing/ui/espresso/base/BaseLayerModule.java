@@ -163,10 +163,4 @@ public class BaseLayerModule {
     return RootMatchers.DEFAULT;
   }
 
-  @Provides
-  @IdlingRegistryTimeoutMs
-  long provideIdlingRegistryTimeout(@TargetContext Context context) {
-    int seconds = 26;
-    return TimeUnit.SECONDS.toMillis(seconds);
-  }
 }
