@@ -74,7 +74,7 @@ public final class IdlingResourceRegistry {
           register(resource);
         }
       });
-    } else {
+    } else {      
       for (IdlingResource oldResource : resources) {
         if (resource.getName().equals(oldResource.getName())) {
           // This does not throw an error to avoid leaving tests that register resource in test
@@ -199,8 +199,11 @@ public final class IdlingResourceRegistry {
     private void handleResourceIdled(Message m) {
       idleState.set(m.arg1, true);
       if (idleState.cardinality() == resources.size()) {
-        idleNotificationCallback.allResourcesIdle();
-        deregister();
+        try {
+          idleNotificationCallback.allResourcesIdle();
+        } finally {
+          deregister();
+        }
       }
     }
 
@@ -227,8 +230,11 @@ public final class IdlingResourceRegistry {
         // if the race resolves, we need to timeout properly.
         handler.sendEmptyMessage(TIMEOUT_OCCURRED);
       } else {
-        idleNotificationCallback.resourcesHaveTimedOut(busyResources);
-        deregister();
+        try {
+          idleNotificationCallback.resourcesHaveTimedOut(busyResources);
+        } finally {
+          deregister();
+        }
       }
     }
 
