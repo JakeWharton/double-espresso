@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--   XML for screen that holds various scroll views. -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/top_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="top_left" />
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="#FFDDDDDD"
+            android:fillViewport="true"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/double_scroll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="200dp"
+                    android:text="double_scroll"
+                    android:textColor="#000000" />
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Keep this on bottom to test scrolling to views that are not showing. -->
+        <!-- Huge top margin to guarantee this being out of view on large screen layout. -->
+
+        <HorizontalScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="3000dp"
+            android:background="#FFDDDDDD" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/bottom_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="bottom_left"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/bottom_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3000dp"
+                    android:text="bottom_right"
+                    android:textColor="#000000" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+</ScrollView>

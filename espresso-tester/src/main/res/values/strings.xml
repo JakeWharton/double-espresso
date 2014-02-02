@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="button_send">Send</string>
+    <string name="button_send_bottom">Send Bottom</string>
+    <string name="button_call">Call</string>
+    <string name="button_to_message">SMS</string>
+    <string name="button_to_browser">Go To Browser</string>
+    <string name="button_pick">Pick</string>
+    <string name="button_market">Goto Market</string>
+    <string name="button_gesture">Go To Gesture Activity</string>
+    <string name="button_simple">Click Me!</string>
+    <string name="display_data" />
+    <string name="display_title">Data from sender</string>
+    <string name="dialog_title">An emergency alert</string>
+    <string name="dialog_message">A really important message</string>
+    <string name="enter_hint">Type text and press Enter</string>
+    <string name="launch_list_activity">Launch list_activity</string>
+    <string name="launch_scroll_activity">Launch scroll_activity</string>
+    <string name="send_data_to_message_edit_text">send_data_to_message_edit_text</string>
+    <string name="send_hint">Enter text here</string>
+    <string name="send_hint_for_call">Enter number here</string>
+    <string name="send_title">Send internal intent with data</string>
+    <string name="send_intent_to_call">Enter Number To Call</string>
+    <string name="send_intent_to_market">Enter App Id From Market</string>
+    <string name="send_intent_to_browser">Enter URL you wanted to go.</string>
+    <string name="send_hint_to_market">Enter App id</string>
+    <string name="send_message">Enter Message</string>
+    <string name="pick_title">Pick a Contact</string>
+    <string name="item_1_text">Menu Item 1</string>
+    <string name="item_2_text">Goodbye</string>
+    <string name="make_alert_dialog_button">Make an alert dialog</string>
+    <string name="make_popup_menu_button">Make a Popup Window</string>
+    <string name="make_popup_view_button">Make a Popup Window</string>
+    <string name="popup_window_text">I am in a popup window</string>
+    <string name="popup_title">A popup window</string>
+    <string name="gesture_title">Show Gesture Activity</string>
+    <string name="text_click">Click</string>
+    <string name="text_long_click">Long Click</string>
+    <string name="text_swipe">Swipe</string>
+    <string name="text_double_click">Double Click</string>
+    <string name="text_empty"></string>
+    <string name="text_show">Show context actionbar</string>
+    <string name="text_hide">Hide context actionbar</string>
+    <string name="text_simple">Message</string>
+    <string name="popup_item_1_text">Popup Item 1</string>
+    <string name="popup_item_2_text">Popup Item 2</string>
+    <string name="popup_item_3_text">Popup Item 3</string>
+    <string name="context_item_1_text">Context Item 1</string>
+    <string name="context_item_2_text">Context Item 2</string>
+    <string name="context_item_3_text">Context Item 3</string>
+    <string name="options_item_1_text">Options Item 1</string>
+    <string name="options_item_2_text">Options Item 2</string>
+    <string name="options_item_3_text">Options Item 3</string>
+    <string name="searching_for_label">Searching for:</string>
+    <string name="row_label">clicked on row:</string>
+    <string name="column_label">clicked on column:</string>
+    <string name="hello_world">hello world!</string>
+    <string name="request_hello_world">Request hello world</string>
+    <string name="pick_water">Pick a body of water</string>
+    <string name="nav_drawer_open">Open navigation drawer</string>
+    <string name="nav_drawer_close">Close navigation drawer</string>
+
+    <string-array name="spinner_array">
+        <item>Espresso</item>
+        <item>Doppio</item>
+        <item>Macchiato</item>
+        <item>Cappuccino</item>
+        <item>Americano</item>
+        <item>Mocha</item>
+        <item>Late</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,32 @@
+buildscript {
+  dependencies {
+    classpath 'com.android.tools.build:gradle:0.8.+'
+  }
+}
+
+apply plugin: 'android-library'
+
+dependencies {
+  compile 'com.squareup.dagger:dagger:1.2.0'
+  provided 'com.squareup.dagger:dagger-compiler:1.2.0'
+  compile 'com.google.guava:guava:16.0'
+  compile 'javax.annotation:javax.annotation-api:1.2'
+  compile 'com.google.code.findbugs:jsr305:1.3.9'
+}
+
+android {
+  compileSdkVersion 19
+  buildToolsVersion '19.0.1'
+
+  lintOptions {
+    abortOnError false
+  }
+}
+
+// Strip ExposedInstrumentationApi from the packaged classes. See the class for reasoning.
+android.libraryVariants.all { variant ->
+  def jarTask = project.tasks.getByName("package${variant.name.capitalize()}Jar")
+  jarTask.excludes += '**/ExposedInstrumentationApi*'
+}
+
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'

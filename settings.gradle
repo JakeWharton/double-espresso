@@ -1,0 +1,10 @@
+include ':espresso'
+include ':espresso-tester'
+
+include ':espresso-support-v4'
+include ':espresso-support-v4-tester'
+
+include ':espresso-runner'
+include ':espresso-runner-runtime'
+
+include ':espresso-sample'

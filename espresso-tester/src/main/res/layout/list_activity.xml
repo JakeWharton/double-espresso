@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- XML for a screen with a list view. -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="48dp"
+    android:paddingTop="48dp" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="24dp" >
+
+        <TextView
+            android:id="@+id/selection_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/row_label" />
+
+        <TextView
+            android:id="@+id/selection_row_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="24dp" >
+
+        <TextView
+            android:id="@+id/selection_column"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/column_label" />
+
+        <TextView
+            android:id="@+id/selection_column_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

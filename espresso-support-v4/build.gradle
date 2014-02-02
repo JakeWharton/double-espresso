@@ -1,0 +1,27 @@
+buildscript {
+  dependencies {
+    classpath 'com.android.tools.build:gradle:0.8.+'
+  }
+}
+
+apply plugin: 'android-library'
+
+dependencies {
+  compile project(':espresso')
+  compile 'com.android.support:support-v4:19.0.1'
+}
+
+android {
+  compileSdkVersion 19
+  buildToolsVersion '19.0.1'
+
+  lintOptions {
+    abortOnError false
+  }
+
+  packagingOptions {
+    exclude 'LICENSE.txt'
+  }
+}
+
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
