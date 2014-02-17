@@ -5,11 +5,11 @@ A pure Gradle port of the [Espresso][1] testing utility for Android!
 
 No more fumbling with local jars or dependency conflicts. Pull it in with one line:
 ```groovy
-instrumentTestCompile 'com.jakewharton.espresso:espresso:1.1-r1'
+instrumentTestCompile 'com.jakewharton.espresso:espresso:1.1-r2'
 ```
 Espresso also has an add-on module which provides helpers for the support-v4 library:
 ```groovy
-instrumentTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r1'
+instrumentTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r2'
 ```
 
 Configure the build to use Espresso's custom test runner:
@@ -39,14 +39,14 @@ duplicated in both the app and test app.
 For example, if you have a dependency on [Dagger][4] you will need to manually exclude it from
 the test dependency for the time being.
 ```groovy
-instrumentTestCompile('com.jakewharton.espresso:espresso:1.1-r1') {
+instrumentTestCompile('com.jakewharton.espresso:espresso:1.1-r2') {
   exclude group: 'com.squareup.dagger'
 }
 ```
 
 The following are the dependencies of Espresso which may need to be temporarily excluded:
 ```
-com.squareup.dagger:dagger:1.2.0
+com.squareup.dagger:dagger:1.2.1
 javax.inject:javax.inject:1
 javax.annotation:javax.annotation-api:1.2
 com.google.guava:guava:16.0
@@ -87,7 +87,7 @@ The following things are worth noting from the migration:
  * Declaring activities inside the instrumentation test for library projects [is not supported][2].
    To work around this, we mirror the Maven technique of having "tester" projects adjacent to the
    libraries. The activities the tests exercise are in `src/main/` with a proper manifest.
- * Dagger was updated to version 1.2.0.
+ * Dagger was updated to version 1.2.1.
  * Guava was updated to version 16.0.
 
 
