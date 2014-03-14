@@ -3,13 +3,15 @@ Double Espresso
 
 A pure Gradle port of the [Espresso][1] testing utility for Android!
 
+Note: From android gradle plugin 0.9, use ``androidTestCompile`` for dependencies instead of ``instrumentTestCompile`` (see [plugin migration instructions][6])
+
 No more fumbling with local jars or dependency conflicts. Pull it in with one line:
 ```groovy
-instrumentTestCompile 'com.jakewharton.espresso:espresso:1.1-r2'
+androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r2'
 ```
 Espresso also has an add-on module which provides helpers for the support-v4 library:
 ```groovy
-instrumentTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r2'
+androidTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r2'
 ```
 
 Configure the build to use Espresso's custom test runner:
@@ -39,7 +41,7 @@ duplicated in both the app and test app.
 For example, if you have a dependency on [Dagger][4] you will need to manually exclude it from
 the test dependency for the time being.
 ```groovy
-instrumentTestCompile('com.jakewharton.espresso:espresso:1.1-r2') {
+androidTestCompile('com.jakewharton.espresso:espresso:1.1-r2') {
   exclude group: 'com.squareup.dagger'
 }
 ```
@@ -100,3 +102,4 @@ The following things are worth noting from the migration:
  [3]: http://b.android.com/65445
  [4]: http://square.github.io/dagger
  [5]: https://github.com/JakeWharton/double-espresso/compare/master...gradle
+ [6]: http://tools.android.com/tech-docs/new-build-system/migrating_to_09
