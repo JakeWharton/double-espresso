@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.8.+'
+    classpath 'com.android.tools.build:gradle:0.9.+'
   }
 }
 
@@ -10,8 +10,8 @@ dependencies {
   compile 'com.android.support:support-v4:19.0.1'
   compile 'com.android.support:appcompat-v7:19.0.1'
 
-  instrumentTestCompile project(':espresso')
-  instrumentTestCompile(project(':espresso-support-v4')) {
+  androidTestCompile project(':espresso')
+  androidTestCompile(project(':espresso-support-v4')) {
     // TODO workaround for http://b.android.com/65445
     exclude group:'com.android.support', module:'support-v4'
   }

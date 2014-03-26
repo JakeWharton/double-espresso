@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.8.+'
+    classpath 'com.android.tools.build:gradle:0.9.+'
   }
 }
 
@@ -11,11 +11,11 @@ dependencies {
   compile 'com.android.support:appcompat-v7:19.0.1'
   compile 'com.google.guava:guava:16.0'
 
-  instrumentTestCompile(project(':espresso')) {
+  androidTestCompile(project(':espresso')) {
     // TODO workaround for http://b.android.com/65445
     exclude group:'com.google.guava', module:'guava'
   }
-  instrumentTestCompile 'org.mockito:mockito-core:1.9.5'
+  androidTestCompile 'org.mockito:mockito-core:1.9.5'
 }
 
 android {
