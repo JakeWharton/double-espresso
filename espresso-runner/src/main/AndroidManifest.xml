@@ -8,6 +8,6 @@
 
     <uses-sdk android:minSdkVersion="8" />
 
-    <application android:label="GoogleInstrumentationTestRunner" />
+    <application/>
 
 </manifest>
