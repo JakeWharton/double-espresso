@@ -7,11 +7,11 @@ Note: From android gradle plugin 0.9, use ``androidTestCompile`` for dependencie
 
 No more fumbling with local jars or dependency conflicts. Pull it in with one line:
 ```groovy
-androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r2'
+androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
 ```
 Espresso also has an add-on module which provides helpers for the support-v4 library:
 ```groovy
-androidTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r2'
+androidTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r3'
 ```
 
 Configure the build to use Espresso's custom test runner:
@@ -41,7 +41,7 @@ duplicated in both the app and test app.
 For example, if you have a dependency on [Dagger][4] you will need to manually exclude it from
 the test dependency for the time being.
 ```groovy
-androidTestCompile('com.jakewharton.espresso:espresso:1.1-r2') {
+androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
   exclude group: 'com.squareup.dagger'
 }
 ```
