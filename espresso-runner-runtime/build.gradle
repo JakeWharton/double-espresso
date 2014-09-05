@@ -1,18 +1,18 @@
 buildscript {
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.9.+'
+    classpath rootProject.ext.androidPlugin
   }
 }
 
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 dependencies {
   compile project(':espresso-runner')
 }
 
 android {
-  compileSdkVersion 19
-  buildToolsVersion '19.0.1'
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
 }
 
 apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
