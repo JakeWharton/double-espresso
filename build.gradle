@@ -14,7 +14,7 @@ allprojects {
 }
 
 ext {
-  androidPlugin = 'com.android.tools.build:gradle:0.12.2'
+  androidPlugin = 'com.android.tools.build:gradle:0.13.0'
   compileSdkVersion = 20
   buildToolsVersion = '20.0.0'
 }
