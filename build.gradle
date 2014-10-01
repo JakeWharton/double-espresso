@@ -1,12 +1,12 @@
 allprojects {
   buildscript {
     repositories {
-      mavenCentral()
+      jcenter()
     }
   }
 
   repositories {
-    mavenCentral()
+    jcenter()
   }
 
   group = GROUP
