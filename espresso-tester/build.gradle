@@ -7,8 +7,8 @@ buildscript {
 apply plugin: 'com.android.application'
 
 dependencies {
-  compile 'com.android.support:support-v4:19.0.1'
-  compile 'com.android.support:appcompat-v7:19.0.1'
+  compile 'com.android.support:support-v4:21.0.0'
+  compile 'com.android.support:appcompat-v7:21.0.0'
   compile 'com.google.guava:guava:16.0'
 
   androidTestCompile(project(':espresso')) {
