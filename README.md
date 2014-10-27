@@ -59,7 +59,7 @@ org.hamcrest:hamcrest-integration:1.1
 ```
 and those of the 'support-v4' module:
 ```
-com.android.support:support-v4:19.0.1
+com.android.support:support-v4:21.0.0
 ```
 
 
