@@ -1,3 +1,8 @@
+# DEPRECATED
+
+This project is now deprecated. Espresso 2.0 is now available.
+
+
 Double Espresso
 ===============
 
